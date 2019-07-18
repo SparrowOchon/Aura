@@ -9,7 +9,7 @@ class UserSkills(commands.Cog):
     def __init__(self, client):
         self.client = client
 
-    @commands.command()
+    @commands.command(aliases=['upgrades', 'up', 'skill', 'skills'])
     async def upgrade(self, ctx, upgrade: typing.Optional[str] = '', amount: typing.Optional[str] = '1'):
         member = ctx.author
 
