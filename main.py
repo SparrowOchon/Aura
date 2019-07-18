@@ -5,6 +5,7 @@ import asyncio
 import asyncpg
 import logging
 import datetime
+import random
 
 
 # Logs to console
@@ -62,7 +63,70 @@ async def on_message(message):
     # Adds the text message to the database
     await client.pool.execute('''UPDATE users SET text_messages = text_messages+1 WHERE user_id = %s ''' % (int(member.id)))
 
-    print(f'{message.author} in {message.author.guild.name}: {message.content}')
+    # Retrieves levels
+    mc_level = await client.pool.fetchval(
+        '''SELECT multi_hit_chance FROM user_skills WHERE user_id = %s''' % member.id)
+    mc = ['mc', 'multi-hit chance']
+    mf_level = await client.pool.fetchval(
+        '''SELECT multi_hit_factor FROM user_skills WHERE user_id = %s''' % member.id)
+    mf = ['mf', 'multi-hit factor']
+    cc_level = await client.pool.fetchval(
+        '''SELECT critical_chance FROM user_skills WHERE user_id = %s''' % member.id)
+    cc = ['cc', 'critical chance']
+    cp_level = await client.pool.fetchval(
+        '''SELECT critical_power FROM user_skills WHERE user_id = %s''' % member.id)
+    cp = ['cp', 'critical power']
+    sc_level = await client.pool.fetchval(
+        '''SELECT status_chance FROM user_skills WHERE user_id = %s''' % member.id)
+    sc = ['sc', 'status chance']
+    sl_level = await client.pool.fetchval(
+        '''SELECT status_length FROM user_skills WHERE user_id = %s''' % member.id)
+    sl = ['sc', 'status length']
+
+    # Points per message
+    ppm = 1
+    points = 1
+
+    # Calculates multi-hit
+    multi_chance = mc_level*1
+    multi_factor = mf_level+2
+    multi_hits = 0
+    if multi_chance > 100:
+        while True:
+            multi_chance = multi_chance-100
+            multi_hits = multi_hits+1
+            if multi_chance < 100:
+                break
+    if random.random() < multi_chance:
+        multi_hits = multi_hits+1
+
+    multi_msg = 1+multi_hits*multi_factor
+    print(f'Multi_msg {multi_msg}')
+
+    # Calculates critical hits
+    critical_chance = cc_level*1
+    critical_hits = 0
+    if critical_chance > 100:
+        while True:
+            critical_chance = critical_chance-100
+            critical_hits = critical_hits+1
+            if critical_chance < 100:
+                break
+    while True:
+        multi_msg = multi_msg-1
+        total_crit = critical_hits
+        if random.random() < critical_chance:
+            total_crit = total_crit+1
+        points = points+ppm*(total_crit+1)
+        if multi_msg == 0:
+            break
+    print(f'Points {points}')
+    # Adds points to the database
+    await client.pool.execute('''UPDATE users SET points = points+%s WHERE user_id = %s ''' % (points, int(member.id)))
+
+
+    # Print the message
+    print(f'{message.author} in {message.guild.name}: {message.content}')
     await client.process_commands(message)
 
 
