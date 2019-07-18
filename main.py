@@ -66,11 +66,11 @@ async def on_voice_state_update(member, before, after):
 
         # Adds user to the database if they are not in it
         await client.pool.execute(
-            '''INSERT INTO users(user_id, text_messages, voice_time, points) VALUES(%s, %s, %s, %s) ON CONFLICT DO NOTHING'''
-            % (int(member.id), int(0), int(0), int(0)))
+            '''INSERT INTO users(user_id, text_messages, voice_time, points) VALUES(%s, %s, %s, %s) ON CONFLICT DO NOTHING''' % (int(member.id), int(0), int(0), int(0)))
 
         # Store the current timestamp in the database
-        await client.pool.execute('''UPDATE users SET voice_join_timestamp = %s WHERE user_id = %s''', (datetime.datetime.now(), member.id))
+        now = datetime.datetime.now()
+        await client.pool.execute('''UPDATE users SET voice_join_timestamp = $$%s$$ WHERE user_id = %s''' % (now, member.id))
 
     # User left the channel
     if before.channel is not None and after.channel is None:
@@ -78,10 +78,11 @@ async def on_voice_state_update(member, before, after):
         if member.guild.afk_channel is None or before.channel.id is not member.guild.afk_channel.id:
             # Get the time in voice chat
             before_timestamp = await client.pool.fetchval('''SELECT voice_join_timestamp FROM users WHERE user_id = %s''' % (member.id))
-            td = datetime.datetime.now() - before_timestamp[0]
+            now = datetime.datetime.now()
+            td = now - before_timestamp
             td_seconds = int(td.total_seconds())
+            print(td_seconds)
             await client.pool.execute('''UPDATE users SET voice_time = voice_time + %s WHERE user_id = %s''' % (td_seconds, member.id))
-            # Add points
         # Wipe timestamp
         await client.pool.execute('''UPDATE users SET voice_join_timestamp = NULL WHERE user_id = %s''' % (member.id))
 
