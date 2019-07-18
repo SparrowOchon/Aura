@@ -37,7 +37,7 @@ class Statistics(commands.Cog):
         embed.add_field(name=f'Total text messages', value=f'{msg_count} messages', inline=False)
         vc_time = time.strftime('%H hours, %M minutes and %S seconds', time.gmtime(vc_count))
         embed.add_field(name=f'Total time in voice chat', value=f'{vc_time}', inline=False)
-        embed.add_field(name=f'Total points', value=f'{points} points', inline=False)
+        embed.add_field(name=f'Total points', value=f'{round(points):,} points', inline=False)
         embed.set_author(name=target, icon_url=target.avatar_url)
         await ctx.send(embed=embed)
 

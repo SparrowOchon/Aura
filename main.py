@@ -60,6 +60,11 @@ async def on_message(message):
     # Add users into the database if they're not there
     await client.pool.execute('''INSERT INTO users(user_id, text_messages, voice_time, points, voice_join_timestamp) VALUES(%s, %s, %s, %s, NULL) ON CONFLICT DO NOTHING''' % (int(member.id), int(0), int(0), int(0)))
 
+    # Adds user into the user_skill database if they are not there
+    await client.pool.execute(
+        '''INSERT INTO user_skills(user_id, multi_hit_chance, multi_hit_factor, critical_chance, critical_power, status_chance, status_length) VALUES(%s, %s, %s, %s, %s, %s, %s) ON CONFLICT DO NOTHING''' % (
+        int(member.id), 0, 0, 0, 0, 0, 0))
+
     # Adds the text message to the database
     await client.pool.execute('''UPDATE users SET text_messages = text_messages+1 WHERE user_id = %s ''' % (int(member.id)))
 
@@ -85,27 +90,31 @@ async def on_message(message):
 
     # Points per message
     ppm = 1
-    points = 1
+    points = 0
 
     # Calculates multi-hit
-    multi_chance = mc_level*1
-    multi_factor = mf_level+2
+    multi_chance = mc_level*0.5
+    multi_factor = (mf_level+1)*2
     multi_hits = 0
     if multi_chance > 100:
+        print('Multi-hit chance above 100!')
         while True:
             multi_chance = multi_chance-100
             multi_hits = multi_hits+1
             if multi_chance < 100:
                 break
-    if random.random() < multi_chance:
+    if random.randint(1, 100) < multi_chance:
         multi_hits = multi_hits+1
 
-    multi_msg = 1+multi_hits*multi_factor
-    print(f'Multi_msg {multi_msg}')
-
+    multi_msg = multi_hits*multi_factor
+    # print(f'Multi hits {multi_hits}')
+    # print(f'Multi factor {multi_factor}')
+    # print(f'Multi_msg {multi_msg}')
+    msg = multi_msg+1
     # Calculates critical hits
     critical_chance = cc_level*1
     critical_hits = 0
+    critical_power = (cp_level+1)*2
     if critical_chance > 100:
         while True:
             critical_chance = critical_chance-100
@@ -113,13 +122,15 @@ async def on_message(message):
             if critical_chance < 100:
                 break
     while True:
-        multi_msg = multi_msg-1
+        msg = msg-1
         total_crit = critical_hits
-        if random.random() < critical_chance:
+        if random.randint(1,100) < critical_chance:
+            # print('Crit proc!')
             total_crit = total_crit+1
-        points = points+ppm*(total_crit+1)
-        if multi_msg == 0:
+        points = points+ppm*(total_crit+1)*critical_power
+        if msg == 0:
             break
+
     print(f'Points {points}')
     # Adds points to the database
     await client.pool.execute('''UPDATE users SET points = points+%s WHERE user_id = %s ''' % (points, int(member.id)))
@@ -166,6 +177,9 @@ async def on_voice_state_update(member, before, after):
 async def on_ready():
     print('Bot is ready')
     guild_list = []
+
+    channel = client.get_channel(601539314874187776)
+    await channel.send('Bot is online')
 
     # Add all guilds to the guild list
     for guild in list(client.guilds):

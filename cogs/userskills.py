@@ -32,25 +32,132 @@ class UserSkills(commands.Cog):
         all_upgrades = mc + mf + cc + cp + sc + sl
 
         # Cost
-        mc_cost = 1.04**mc_level
-        mf_cost = 1.04**mf_level
-        cc_cost = 1.04**cc_level
-        cp_cost = 1.04**cp_level
+        mc_cost = 1.04**(mc_level+1)
+        mf_cost = 1.04**(mf_level+1)
+        cc_cost = 1.04**(cc_level+1)
+        cp_cost = 1.04**(cp_level+1)
 
         if upgrade == 'help' or upgrade == '':
             embed = discord.Embed(title='Upgrades', description='Upgrade your skills to earn more points')
-            embed.add_field(name=f'[MC] Multi-hit Chance (Level {mc_level})', value=f'Chance to proc multiple messages that will also apply other upgrades. It does not proc itself. \n Cost: {mc_cost}', inline=False)
-            embed.add_field(name=f'[MF] Multi-hit Factor (Level {mf_level})', value=f'Number of multi-hits on proc \n Cost: {mf_cost}', inline=False)
-            embed.add_field(name=f'[CC] Critical Chance (Level {cc_level})', value=f'Chance to get critical hits \n Cost: {cc_cost}', inline=False)
-            embed.add_field(name=f'[CP] Critical Power (Level {cp_level})', value=f'Factor the points are multiplied by \n Cost: {cp_cost}', inline=False)
+            embed.add_field(name=f'[MC] Multi-hit Chance (Level {round(mc_level)})', value=f'Chance to proc multiple messages that will also apply other upgrades. It does not proc itself. \n Chance: {round(mc_level)*0.5}% \n Cost: {round(mc_cost)}', inline=False)
+            embed.add_field(name=f'[MF] Multi-hit Factor (Level {round(mf_level)})', value=f'Number of multi-hits on proc \n Factor: {(mf_level+1)*2}x \n Cost: {round(mf_cost)}', inline=False)
+            embed.add_field(name=f'[CC] Critical Chance (Level {round(cc_level)})', value=f'Chance to get critical hits \n Chance: {cc_level}% \n Cost: {round(cc_cost)}', inline=False)
+            embed.add_field(name=f'[CP] Critical Power (Level {round(cp_level)})', value=f'Factor the points are multiplied by \n Factor: {(cp_level+1)*2}x \n Cost: {round(cp_cost)}', inline=False)
             #embed.add_field(name=f'[SC] Status Chance (Level {sc_level})', value=f'Chance to apply a status effect, caps to certain percentage', inline=False)
             #embed.add_field(name=f'[SL] Status Length (Level {sl_level})', value=f'Length of the status effect', inline=False)
             await ctx.send(embed=embed)
-
         elif upgrade in mc:
-
-            await ctx.send(f'Upgraded multi-hit chance by levels.')
-            await self.client.pool.execute('''UPDATE user_skills SET multi_hit_chance = %s WHERE user_id = %s ''' % (mc_level, int(member.id)))
+            print('Upgrade multi-hit chance')
+            user_points = await self.client.pool.fetchval('''SELECT points FROM users WHERE user_id = %s''' % member.id)
+            if str.isdigit(amount) is True:
+                print('Upgrade initiated')
+                cost_list = []
+                new_level = mc_level
+                if mc_cost < user_points:
+                    count = 0
+                    while True:
+                        count = count+1
+                        new_level = new_level+1
+                        new_level_cost = 1.04**new_level
+                        cost_list.append(new_level_cost)
+                        cost_sum = sum(cost_list)
+                        if cost_sum+1.04**(new_level+1) > user_points:
+                            break
+                        if int(count) == int(amount):
+                            break
+                    await self.client.pool.execute(
+                        '''UPDATE users SET points = points-%s WHERE user_id = %s ''' % (
+                            cost_sum, int(member.id)))
+                    await self.client.pool.execute(
+                        '''UPDATE user_skills SET multi_hit_chance = multi_hit_chance+%s WHERE user_id = %s ''' % (
+                            count, int(member.id)))
+                    await ctx.send(f'Upgraded multi-hit chance by {count} levels.')
+                else:
+                    await ctx.send(f'Not enough points!')
+        elif upgrade in mf:
+            print('Upgrade multi-hit factor')
+            user_points = await self.client.pool.fetchval('''SELECT points FROM users WHERE user_id = %s''' % member.id)
+            if str.isdigit(amount) is True:
+                print('Upgrade initiated')
+                cost_list = []
+                new_level = mf_level
+                if mf_cost < user_points:
+                    count = 0
+                    while True:
+                        count = count+1
+                        new_level = new_level+1
+                        new_level_cost = 1.04**new_level
+                        cost_list.append(new_level_cost)
+                        cost_sum = sum(cost_list)
+                        if cost_sum+1.04**(new_level+1) > user_points:
+                            break
+                        if int(count) == int(amount):
+                            break
+                    await self.client.pool.execute(
+                        '''UPDATE users SET points = points-%s WHERE user_id = %s ''' % (
+                            cost_sum, int(member.id)))
+                    await self.client.pool.execute(
+                        '''UPDATE user_skills SET multi_hit_factor = multi_hit_factor+%s WHERE user_id = %s ''' % (
+                            count, int(member.id)))
+                    await ctx.send(f'Upgraded multi-hit factor by {count} levels.')
+                else:
+                    await ctx.send(f'Not enough points!')
+        elif upgrade in cc:
+            print('Upgrade critical chance')
+            user_points = await self.client.pool.fetchval('''SELECT points FROM users WHERE user_id = %s''' % member.id)
+            if str.isdigit(amount) is True:
+                print('Upgrade initiated')
+                cost_list = []
+                new_level = cc_level
+                if cc_cost < user_points:
+                    count = 0
+                    while True:
+                        count = count+1
+                        new_level = new_level+1
+                        new_level_cost = 1.04**new_level
+                        cost_list.append(new_level_cost)
+                        cost_sum = sum(cost_list)
+                        if cost_sum+1.04**(new_level+1) > user_points:
+                            break
+                        if int(count) == int(amount):
+                            break
+                    await self.client.pool.execute(
+                        '''UPDATE users SET points = points-%s WHERE user_id = %s ''' % (
+                            cost_sum, int(member.id)))
+                    await self.client.pool.execute(
+                        '''UPDATE user_skills SET critical_chance = critical_chance+%s WHERE user_id = %s ''' % (
+                            count, int(member.id)))
+                    await ctx.send(f'Upgraded critical chance by {count} levels.')
+                else:
+                    await ctx.send(f'Not enough points!')
+        elif upgrade in cp:
+            print('Upgrade critical power')
+            user_points = await self.client.pool.fetchval('''SELECT points FROM users WHERE user_id = %s''' % member.id)
+            if str.isdigit(amount) is True:
+                print('Upgrade initiated')
+                cost_list = []
+                new_level = cp_level
+                if cp_cost < user_points:
+                    count = 0
+                    while True:
+                        count = count+1
+                        new_level = new_level+1
+                        new_level_cost = 1.04**new_level
+                        cost_list.append(new_level_cost)
+                        cost_sum = sum(cost_list)
+                        if cost_sum+1.04**(new_level+1) > user_points:
+                            break
+                        if int(count) == int(amount):
+                            break
+                    await self.client.pool.execute(
+                        '''UPDATE users SET points = points-%s WHERE user_id = %s ''' % (
+                            cost_sum, int(member.id)))
+                    await self.client.pool.execute(
+                        '''UPDATE user_skills SET critical_power = critical_power+%s WHERE user_id = %s ''' % (
+                            count, int(member.id)))
+                    await ctx.send(f'Upgraded critical power by {count} levels.')
+                else:
+                    await ctx.send(f'Not enough points!')
 
 
 def setup(client):
