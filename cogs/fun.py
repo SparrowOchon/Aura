@@ -3,19 +3,7 @@ import logging
 from discord import Member
 from discord.ext.commands import has_permissions, MissingPermissions
 from discord.ext import commands
-import psycopg2
 import random
-
-# Database Setup
-con = psycopg2.connect(
-    host='127.0.0.1',
-    database='AlphaBot',
-    user='postgres',
-    password='admin123'
-)
-
-# Creates database cursor
-cur = con.cursor()
 
 
 class Fun(commands.Cog):

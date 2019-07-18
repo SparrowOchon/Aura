@@ -12,7 +12,10 @@ class UserSkills(commands.Cog):
     @commands.command()
     async def upgrade(self, ctx, upgrade: typing.Optional[str] = '', amount: typing.Optional[str] = '1'):
         member = ctx.author
+
+        # Adds user into the user_skill database if they are not there
         await self.client.pool.execute('''INSERT INTO user_skills(user_id, multi_hit_chance, multi_hit_factor, critical_chance, critical_power, status_chance, status_length) VALUES(%s, %s, %s, %s, %s, %s, %s) ON CONFLICT DO NOTHING'''% (int(member.id), 0, 0, 0, 0, 0, 0))
+
         mc_level = await self.client.pool.fetchval('''SELECT multi_hit_chance FROM user_skills WHERE user_id = %s''' % member.id)
         mc = ['mc', 'multi-hit chance']
         mf_level = await self.client.pool.fetchval('''SELECT multi_hit_factor FROM user_skills WHERE user_id = %s''' % member.id)
