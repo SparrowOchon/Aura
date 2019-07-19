@@ -59,7 +59,7 @@ async def get_prefix(bot, message):
     if not message.guild:
         return commands.when_mentioned_or('.')(bot, message)
     prefix = await client.pool.fetchval('SELECT prefix FROM guilds WHERE guild_id = %s' % message.guild.id)
-    print(prefix)
+    # print(prefix)
     if prefix is None:
         return commands.when_mentioned_or('.')(bot, message)
     return commands.when_mentioned_or(str(prefix))(bot, message)
@@ -120,7 +120,7 @@ async def on_message(message):
     multi_factor = (mf_level+1)*2
     multi_hits = 0
     if multi_chance > 100:
-        print('Multi-hit chance above 100!')
+        # print('Multi-hit chance above 100!')
         while True:
             multi_chance = multi_chance-100
             multi_hits = multi_hits+1
@@ -240,7 +240,7 @@ async def on_voice_state_update(member, before, after):
                 multi_factor = (mf_level + 1) * 2
                 multi_hits = 0
                 if multi_chance > 100:
-                    print('Multi-hit chance above 100!')
+                    # print('Multi-hit chance above 100!')
                     while True:
                         multi_chance = multi_chance - 100
                         multi_hits = multi_hits + 1
