@@ -23,7 +23,7 @@ for filename in os.listdir('./cogs'):
 
 # Connects to database
 async def create_db_pool():
-    client.pool = await asyncpg.create_pool(host='127.0.0.1', database='AuraBot', user='postgres', password='admin123')
+    client.pool = await asyncpg.create_pool(host='127.0.0.1', database='GameBot', user='postgres', password='admin123')
 
     # Creates the user database
     await client.pool.execute('''CREATE TABLE IF NOT EXISTS users( 
@@ -59,7 +59,7 @@ async def on_message(message):
     member = message.author
 
     # Add users into the database if they're not there
-    await client.pool.execute('''INSERT INTO users(user_id, text_messages, voice_time, points, voice_join_timestamp) VALUES(%s, %s, %s, %s, NULL) ON CONFLICT DO NOTHING''' % (int(member.id), int(0), int(0), int(0)))
+    await client.pool.execute('''INSERT INTO users(user_id, text_messages, voice_time, points, lifetime, voice_join_timestamp) VALUES(%s, %s, %s, %s, %s, NULL) ON CONFLICT DO NOTHING''' % (int(member.id), int(0), int(0), int(0), int(0)))
 
     # Adds user into the user_skill database if they are not there
     await client.pool.execute(
@@ -112,6 +112,7 @@ async def on_message(message):
     # print(f'Multi factor {multi_factor}')
     # print(f'Multi_msg {multi_msg}')
     msg = multi_msg+1
+    # print(f'msg {msg}')
     # Calculates critical hits
     critical_chance = cc_level*1
     critical_hits = 0
@@ -127,8 +128,10 @@ async def on_message(message):
         total_crit = critical_hits
         if random.randint(1,100) < critical_chance:
             # print('Crit proc!')
-            total_crit = total_crit+1
-        points = points+ppm*(total_crit+1)*critical_power
+            critical_hits = critical_hits+1
+            points = points+(critical_hits)*critical_power*ppm
+        else:
+            points = points+ppm
         if msg == 0:
             break
 
@@ -153,7 +156,7 @@ async def on_voice_state_update(member, before, after):
 
         # Adds user to the database if they are not in it
         await client.pool.execute(
-            '''INSERT INTO users(user_id, text_messages, voice_time, points, lifetime) VALUES(%s, %s, %s, %s, %s) ON CONFLICT DO NOTHING''' % (int(member.id), int(0), int(0), int(0), int(0)))
+            '''INSERT INTO users(user_id, text_messages, voice_time, points, lifetime, voice_join_timestamp) VALUES(%s, %s, %s, %s, %s, NULL) ON CONFLICT DO NOTHING''' % (int(member.id), int(0), int(0), int(0), int(0)))
 
         # Store the current timestamp in the database
         now = datetime.datetime.now()

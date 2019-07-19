@@ -21,8 +21,8 @@ class Statistics(commands.Cog):
         # If user does not exist in the database
         if msg_count is None:
             await self.client.pool.execute(
-                '''INSERT INTO users(user_id, text_messages, voice_time, points, lifetime, voice_join_timestamp) VALUES(%s, %s, %s, %s, %s, %s) ON CONFLICT DO NOTHING'''
-                % (int(target.id), int(0), int(0), int(0), int(0), None))
+                '''INSERT INTO users(user_id, text_messages, voice_time, points, lifetime, voice_join_timestamp) VALUES(%s, %s, %s, %s, %s, NULL) ON CONFLICT DO NOTHING'''
+                % (int(target.id), int(0), int(0), int(0), int(0)))
         msg_count = await self.client.pool.fetchval('''SELECT text_messages FROM users WHERE user_id =%d''' % (int(target.id),))
 
         # Getting the voice time of the user in the server the command was issued in
