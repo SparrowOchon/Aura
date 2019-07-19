@@ -11,14 +11,7 @@ import random
 # Logs to console
 logging.basicConfig(level=logging.INFO)
 
-token = 'MjcyMjYwMDYyNzkyMTIyMzY4.XS9O1Q.fl1ghrEgvrLP0svKo-k5wX3lmd0'
-client = commands.Bot(command_prefix='.')
-
-# Loop to look through cogs folder and load all cogs contained within it
-for filename in os.listdir('./cogs'):
-    if filename.endswith('.py'):
-        # splicing cuts 3 last characters aka .py
-        client.load_extension(f'cogs.{filename[:-3]}')
+token = 'MjcyNTAzNTMxMDIwMzUzNTM2.XTIOPg.XSaDU9PGLis92rJhQQ6SdODMS8A'
 
 
 # Connects to database
@@ -49,7 +42,27 @@ async def create_db_pool():
     # Creates the guild database
     await client.pool.execute('''CREATE TABLE IF NOT EXISTS guilds( 
                             guild_id BIGINT,
+                            prefix TEXT,
                             PRIMARY KEY(guild_id))''')
+
+
+async def get_prefix(bot, message):
+    if not message.guild:
+        return commands.when_mentioned_or('.')(bot, message)
+    prefix = await client.pool.fetchval('SELECT prefix FROM guilds WHERE guild_id = %s' % message.guild.id)
+    print(prefix)
+    if prefix is None:
+        return commands.when_mentioned_or('.')(bot, message)
+    return commands.when_mentioned_or(str(prefix))(bot, message)
+
+
+client = commands.Bot(command_prefix=get_prefix)
+
+# Loop to look through cogs folder and load all cogs contained within it
+for filename in os.listdir('./cogs'):
+    if filename.endswith('.py'):
+        # splicing cuts 3 last characters aka .py
+        client.load_extension(f'cogs.{filename[:-3]}')
 
 
 @client.event
@@ -273,7 +286,7 @@ async def on_ready():
     # Add all guilds to the guild list
     for guild in list(client.guilds):
         guild_list.append(guild.name)
-        await client.pool.execute('''INSERT INTO guilds(guild_id) VALUES(%s) ON CONFLICT DO NOTHING''' % (int(guild.id)))
+        await client.pool.execute('''INSERT INTO guilds(guild_id, prefix) VALUES(%s, $$%s$$) ON CONFLICT DO NOTHING''' % (int(guild.id), '.'))
 
     # Wipes all timestamps to prevent bugs when bot crashes
     await client.pool.execute('''ALTER TABLE users DROP COLUMN voice_join_timestamp CASCADE''')
