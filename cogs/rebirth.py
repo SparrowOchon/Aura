@@ -27,9 +27,17 @@ class Rebirth(commands.Cog):
             embed.add_field(name='Previous Boost Factor', value=f'{round(1+(float(lifetime_flowers))*0.001):,}x', inline=True)
             embed.add_field(name='Current Boost Factor', value=f'{round(1+(flowers+float(lifetime_flowers))*0.001):,}x', inline=True)
             await ctx.send(embed=embed)
-            await self.client.execute('UPDATE users SET lifetimeflowers = lifetimeflowers+%s WHERE user_id = %s' % (flowers, member.id))
-            await self.client.execute('UPDATE users SET flowers = flowers+%s WHERE user_id = %s' % (flowers, member.id))
-            await self.client.execute('UPDATE users SET lifetime = 0 WHERE user_id = %s' % member.id)
+            # Give flowers
+            await self.client.pool.execute('UPDATE users SET lifetimeflowers = lifetimeflowers+%s WHERE user_id = %s' % (flowers, member.id))
+            await self.client.pool.execute('UPDATE users SET flowers = flowers+%s WHERE user_id = %s' % (flowers, member.id))
+            # Reset
+            await self.client.pool.execute('UPDATE users SET lifetime = 0 WHERE user_id = %s' % member.id)
+            await self.client.pool.execute('UPDATE users SET points = 0 WHERE user_id = %s' % member.id)
+            await self.client.pool.execute('UPDATE user_skills SET multi_hit_chance = 0 WHERE user_id = %s' % member.id)
+            await self.client.pool.execute('UPDATE user_skills SET multi_hit_factor = 0 WHERE user_id = %s' % member.id)
+            await self.client.pool.execute('UPDATE user_skills SET critical_chance = 0 WHERE user_id = %s' % member.id)
+            await self.client.pool.execute('UPDATE user_skills SET critical_power = 0 WHERE user_id = %s' % member.id)
+
         else:
             embed = discord.Embed(title='Rebirth Preview', description='')
             silver_emoji = self.client.get_emoji(601632365667811369)
