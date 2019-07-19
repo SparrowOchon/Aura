@@ -14,7 +14,7 @@ logging.basicConfig(level=logging.INFO)
 token = 'MjcyNTAzNTMxMDIwMzUzNTM2.XTIOPg.XSaDU9PGLis92rJhQQ6SdODMS8A'
 
 
-# Connects to database
+# Database Operations
 async def create_db_pool():
     client.pool = await asyncpg.create_pool(host='127.0.0.1', database='GameBot', user='postgres', password='admin123')
 
@@ -25,7 +25,7 @@ async def create_db_pool():
                         voice_time INTEGER,
                         points DECIMAL,
                         lifetime DECIMAL,
-                        voice_join_timestamp VARCHAR[30],
+                        voice_join_timestamp TIMESTAMP,
                         PRIMARY KEY(user_id))''')
 
     # Creates the user skill database
@@ -44,6 +44,14 @@ async def create_db_pool():
                             guild_id BIGINT,
                             prefix TEXT,
                             PRIMARY KEY(guild_id))''')
+
+    # New additions
+
+    # Rebirth Currency (users)
+    await client.pool.execute('''ALTER TABLE users ADD COLUMN IF NOT EXISTS flowers DECIMAL DEFAULT 0''')
+
+    # Premium Currency (users)
+    await client.pool.execute('''ALTER TABLE users ADD COLUMN IF NOT EXISTS quanta DECIMAL DEFAULT 0''')
 
 
 async def get_prefix(bot, message):
