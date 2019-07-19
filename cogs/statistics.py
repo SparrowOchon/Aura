@@ -28,16 +28,17 @@ class Statistics(commands.Cog):
         # Getting the voice time of the user in the server the command was issued in
         vc_count = await self.client.pool.fetchval('''SELECT voice_time FROM users WHERE user_id =%d''' % (int(target.id),))
 
-        # Getting the voice time of the user in the server the command was issued in
+        # Getting points
         points = await self.client.pool.fetchval('''SELECT POINTS FROM users WHERE user_id =%d''' % (int(target.id),))
-
+        lifetime = await self.client.pool.fetchval('''SELECT lifetime FROM users WHERE user_id =%d''' % (int(target.id),))
         # Creating a nice looking embed
         embed = discord.Embed(title=f'Profile Information', description=f'Requested by {ctx.author}')
         embed.add_field(name=f'Discord User ID', value=f'{target.id}', inline=False)
-        embed.add_field(name=f'Total text messages', value=f'{msg_count} messages', inline=False)
+        embed.add_field(name=f'Text messages', value=f'{msg_count} messages', inline=False)
         vc_time = time.strftime('%H hours, %M minutes and %S seconds', time.gmtime(vc_count))
-        embed.add_field(name=f'Total time in voice chat', value=f'{vc_time}', inline=False)
-        embed.add_field(name=f'Total points', value=f'{round(points):,} points', inline=False)
+        embed.add_field(name=f'Time in voice chat', value=f'{vc_time}', inline=False)
+        embed.add_field(name=f'Points', value=f'{round(points):,} points', inline=False)
+        embed.add_field(name=f'Lifetime points', value=f'{round(lifetime):,} points', inline=False)
         embed.set_author(name=target, icon_url=target.avatar_url)
         await ctx.send(embed=embed)
 
