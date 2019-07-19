@@ -23,7 +23,7 @@ for filename in os.listdir('./cogs'):
 
 # Connects to database
 async def create_db_pool():
-    client.pool = await asyncpg.create_pool(host='127.0.0.1', database='GameBot', user='postgres', password='admin123')
+    client.pool = await asyncpg.create_pool(host='127.0.0.1', database='AuraBot', user='postgres', password='admin123')
 
     # Creates the user database
     await client.pool.execute('''CREATE TABLE IF NOT EXISTS users( 
