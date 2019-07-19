@@ -46,8 +46,8 @@ class Statistics(commands.Cog):
         flower_emoji = self.client.get_emoji(601881173597093912)
         quanta_emoji = self.client.get_emoji(601881165791756318)
         embed.add_field(name=f'Quanta', value=f'{round(quanta):,} {quanta_emoji}', inline=False)
-        embed.add_field(name=f'Flower', value=f'{round(flowers):,} {flower_emoji}', inline=False)
-        embed.add_field(name=f'Lifetime Flower', value=f'{round(lifetime_flowers):,} {flower_emoji}', inline=False)
+        embed.add_field(name=f'Flower', value=f'{round(flowers):,} {flower_emoji}', inline=True)
+        embed.add_field(name=f'Lifetime Flower', value=f'{round(lifetime_flowers):,} {flower_emoji}', inline=True)
         embed.set_author(name=target, icon_url=target.avatar_url)
         await ctx.send(embed=embed)
 
