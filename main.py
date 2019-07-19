@@ -49,6 +49,7 @@ async def create_db_pool():
 
     # Rebirth Currency (users)
     await client.pool.execute('''ALTER TABLE users ADD COLUMN IF NOT EXISTS flowers DECIMAL DEFAULT 0''')
+    await client.pool.execute('''ALTER TABLE users ADD COLUMN IF NOT EXISTS lifetimeflowers DECIMAL DEFAULT 0''')
 
     # Premium Currency (users)
     await client.pool.execute('''ALTER TABLE users ADD COLUMN IF NOT EXISTS quanta DECIMAL DEFAULT 0''')
@@ -148,7 +149,7 @@ async def on_message(message):
         msg = msg-1
         total_crit = critical_hits
         if random.randint(1,100) < critical_chance:
-            # print('Crit proc!')
+            # print('Critical proc!')
             critical_hits = critical_hits+1
             points = points+(critical_hits)*critical_power*ppm
         else:
@@ -156,12 +157,16 @@ async def on_message(message):
         if msg == 0:
             break
 
-    print(f'Points {points}')
+    # Rebirth Boost
+    lifetime_flowers = await client.pool.fetchval('''SELECT lifetimeflowers FROM users WHERE user_id =%d''' % (int(member.id),))
+    flowers_boost = 1+float(lifetime_flowers)*0.001
+    points = points*flowers_boost
+
     # Adds points to the database
+    print(f'Points {points}')
     await client.pool.execute('''UPDATE users SET points = points+%s WHERE user_id = %s ''' % (points, int(member.id)))
     # Adds lifetime points to the database
-    await client.pool.execute(
-        '''UPDATE users SET lifetime = lifetime+%s WHERE user_id = %s ''' % (points, int(member.id)))
+    await client.pool.execute('''UPDATE users SET lifetime = lifetime+%s WHERE user_id = %s ''' % (points, int(member.id)))
 
     # Print the message
     print(f'{message.author} in {message.guild.name}: {message.content}')
@@ -270,6 +275,11 @@ async def on_voice_state_update(member, before, after):
                         break
                 if hits == 0:
                     break
+
+                lifetime_flowers = await client.pool.fetchval(
+                    '''SELECT lifetimeflowers FROM users WHERE user_id =%d''' % (int(member.id),))
+                flowers_boost = 1 + lifetime_flowers * 0.001
+                points = points * flowers_boost
 
                 print(f'Points {points}')
                 # Adds points to the database
