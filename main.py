@@ -55,6 +55,7 @@ async def create_db_pool():
     await client.pool.execute('''ALTER TABLE users ADD COLUMN IF NOT EXISTS quanta DECIMAL DEFAULT 0''')
 
 
+# Setting up the prefix
 async def get_prefix(bot, message):
     if not message.guild:
         return commands.when_mentioned_or('.')(bot, message)
@@ -64,9 +65,7 @@ async def get_prefix(bot, message):
         return commands.when_mentioned_or('.')(bot, message)
     return commands.when_mentioned_or(str(prefix))(bot, message)
 
-
 client = commands.Bot(command_prefix=get_prefix)
-
 # Loop to look through cogs folder and load all cogs contained within it
 for filename in os.listdir('./cogs'):
     if filename.endswith('.py'):
@@ -74,6 +73,7 @@ for filename in os.listdir('./cogs'):
         client.load_extension(f'cogs.{filename[:-3]}')
 
 
+# What to do when a message is sent
 @client.event
 async def on_message(message):
     if message.author == client.user:
@@ -163,7 +163,7 @@ async def on_message(message):
     points = points*flowers_boost
 
     # Adds points to the database
-    print(f'Points {points}')
+    print(f'Points {int(points)}')
     await client.pool.execute('''UPDATE users SET points = points+%s WHERE user_id = %s ''' % (points, int(member.id)))
     # Adds lifetime points to the database
     await client.pool.execute('''UPDATE users SET lifetime = lifetime+%s WHERE user_id = %s ''' % (points, int(member.id)))
@@ -173,6 +173,7 @@ async def on_message(message):
     await client.process_commands(message)
 
 
+# What to do when someone joins/quits voice chat
 @client.event
 async def on_voice_state_update(member, before, after):
 
@@ -293,6 +294,7 @@ async def on_voice_state_update(member, before, after):
         await client.pool.execute('''UPDATE users SET voice_join_timestamp = NULL WHERE user_id = %s''' % (member.id))
 
 
+# What to do when the bot finishes loading
 @client.event
 async def on_ready():
     print('Bot is ready')

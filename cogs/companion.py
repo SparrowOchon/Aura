@@ -21,7 +21,7 @@ class Companion(commands.Cog):
 
     @commands.command()
     async def shop(self, ctx):
-        ctx.send('Working on it!')
+        await ctx.send('Working on it!')
 
 
 def setup(client):
