@@ -117,7 +117,7 @@ async def on_message(message):
 
     # Calculates multi-hit
     multi_chance = mc_level*0.5
-    multi_factor = (mf_level+1)*2
+    multi_factor = 2+(mf_level)
     multi_hits = 0
     if multi_chance > 100:
         # print('Multi-hit chance above 100!')
@@ -138,7 +138,7 @@ async def on_message(message):
     # Calculates critical hits
     critical_chance = cc_level*1
     critical_hits = 0
-    critical_power = (cp_level+1)*2
+    critical_power = (cp_level)+2
     if critical_chance > 100:
         while True:
             critical_chance = critical_chance-100
@@ -237,7 +237,7 @@ async def on_voice_state_update(member, before, after):
 
                 # Calculates multi-hit
                 multi_chance = mc_level * 0.5
-                multi_factor = (mf_level + 1) * 2
+                multi_factor = (mf_level)+22
                 multi_hits = 0
                 if multi_chance > 100:
                     # print('Multi-hit chance above 100!')
@@ -257,7 +257,7 @@ async def on_voice_state_update(member, before, after):
                 # Calculates critical hits
                 critical_chance = cc_level * 1
                 critical_hits = 0
-                critical_power = (cp_level + 1) * 2
+                critical_power = (cp_level)+2
                 if critical_chance > 100:
                     while True:
                         critical_chance = critical_chance - 100

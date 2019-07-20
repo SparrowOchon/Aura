@@ -16,7 +16,7 @@ class Rebirth(commands.Cog):
         rate = 0.0000001
         inverse_rate = rate**(-1)
         flowers = int(lifetime) / int(inverse_rate)
-        if confirm == 'confirm-1337':
+        if confirm == 'yes':
             await ctx.send('You have been reborn')
             embed = discord.Embed(title='Rebirth', description='')
             silver_emoji = self.client.get_emoji(601632365667811369)
@@ -48,7 +48,7 @@ class Rebirth(commands.Cog):
             embed.add_field(name='Current Boost Factor', value=f'{round(1+(float(lifetime_flowers))*0.001):,}x', inline=True)
             embed.add_field(name='Final Boost Factor', value=f'{round(1+(flowers+float(lifetime_flowers))*0.001):,}x', inline=True)
             await ctx.send(embed=embed)
-            await ctx.send(f'Use the command \'{ctx.prefix}rebirth confirm-1337\' to rebirth.')
+            await ctx.send(f'Use the command \'{ctx.prefix}rebirth yes\' to rebirth.')
 
 
 def setup(client):

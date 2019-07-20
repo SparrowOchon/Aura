@@ -15,9 +15,14 @@ class Companion(commands.Cog):
         else:
             target = ctx.author
         img = 'https://i.imgur.com/0crAHkT.gif'
-        embed = discord.Embed(title=f'Get dabbed on {target.name}!')
+        embed = discord.Embed(title=f'Testing stuff, {target.name}!')
         embed.set_image(url=f'{img}')
         await ctx.send(embed=embed)
+
+    @commands.command()
+    async def shop(self, ctx):
+        ctx.send('Working on it!')
+
 
 def setup(client):
     client.add_cog(Companion(client))

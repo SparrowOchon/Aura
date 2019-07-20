@@ -41,9 +41,9 @@ class UserSkills(commands.Cog):
         if upgrade == 'help' or upgrade == '':
             embed = discord.Embed(title='Upgrades', description='Upgrade your skills to earn more points')
             embed.add_field(name=f'[MC] Multi-hit Chance (Level {round(mc_level)})', value=f'Chance to proc multiple messages that will also apply other upgrades. It does not proc itself. \n Chance: {round(mc_level)*0.5}% \n Cost: {round(mc_cost):,}', inline=False)
-            embed.add_field(name=f'[MF] Multi-hit Factor (Level {round(mf_level)})', value=f'Number of multi-hits on proc \n Factor: {(mf_level+1)*2}x \n Cost: {round(mf_cost):,}', inline=False)
+            embed.add_field(name=f'[MF] Multi-hit Factor (Level {round(mf_level)})', value=f'Number of multi-hits on proc \n Factor: {2+(mf_level)}x \n Cost: {round(mf_cost):,}', inline=False)
             embed.add_field(name=f'[CC] Critical Chance (Level {round(cc_level)})', value=f'Chance to get critical hits \n Chance: {cc_level}% \n Cost: {round(cc_cost):,}', inline=False)
-            embed.add_field(name=f'[CP] Critical Power (Level {round(cp_level)})', value=f'Factor the points are multiplied by \n Factor: {(cp_level+1)*2}x \n Cost: {round(cp_cost):,}', inline=False)
+            embed.add_field(name=f'[CP] Critical Power (Level {round(cp_level)})', value=f'Factor the points are multiplied by \n Factor: {2+(cp_level)}x \n Cost: {round(cp_cost):,}', inline=False)
             #embed.add_field(name=f'[SC] Status Chance (Level {sc_level})', value=f'Chance to apply a status effect, caps to certain percentage', inline=False)
             #embed.add_field(name=f'[SL] Status Length (Level {sl_level})', value=f'Length of the status effect', inline=False)
             await ctx.send(embed=embed)
