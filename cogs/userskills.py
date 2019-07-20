@@ -12,7 +12,8 @@ class UserSkills(commands.Cog):
     @commands.command(aliases=['upgrades', 'up', 'skill', 'skills'])
     async def upgrade(self, ctx, upgrade: typing.Optional[str] = '', amount: typing.Optional[str] = '1'):
         member = ctx.author
-
+        if amount == 'max':
+            amount = str(9999999999999999999999999999999999999999999)
         # Adds user into the user_skill database if they are not there
         await self.client.pool.execute('''INSERT INTO user_skills(user_id, multi_hit_chance, multi_hit_factor, critical_chance, critical_power, status_chance, status_length) VALUES(%s, %s, %s, %s, %s, %s, %s) ON CONFLICT DO NOTHING'''% (int(member.id), 0, 0, 0, 0, 0, 0))
 
