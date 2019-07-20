@@ -13,13 +13,14 @@ class Background(commands.Cog):
     def cog_unload(self):
         self.voice_check.cancel()
 
-    @tasks.loop(seconds=5.0)
+    @tasks.loop(seconds=15)
     async def voice_check(self):
         for guild in list(self.client.guilds):
+            # print('Checking guilds')
             voice_channels = (vc for vc in guild.channels if vc.type == ChannelType.voice)
             for voice in voice_channels:
                 users = voice.members
-                if voice.members == None:
+                if voice.members is None:
                     break
                 else:
                     for member in users:
@@ -27,21 +28,28 @@ class Background(commands.Cog):
                         await self.client.pool.execute(
                             '''INSERT INTO users(user_id, text_messages, voice_time, points, lifetime, voice_join_timestamp) VALUES(%s, %s, %s, %s, %s, NULL) ON CONFLICT DO NOTHING''' % (
                             int(member.id), int(0), int(0), int(0), int(0)))
-
                         # Get the time in voice chat
+                        now = datetime.datetime.now()
                         before_timestamp = await self.client.pool.fetchval(
                             '''SELECT voice_join_timestamp FROM users WHERE user_id = %s''' % (member.id))
-                        now = datetime.datetime.now()
+                        if before_timestamp is None:
+                            # print('Adding new timestamp')
+                            await self.client.pool.execute(
+                                '''UPDATE users SET voice_join_timestamp = $$%s$$ WHERE user_id = %s''' % (
+                                    now, member.id))
+                            before_timestamp = now
                         td = now - before_timestamp
                         td_seconds = int(td.total_seconds())
-                        print(td_seconds)
+                        # print(td_seconds)
                         await self.client.pool.execute(
                             '''UPDATE users SET voice_time = voice_time + %s WHERE user_id = %s''' % (
                             td_seconds, member.id))
-
+                        print(f'Checking voice time of {member.name}')
                         hits = round(td_seconds / 30)
+                        # print(hits)
                         while True:
                             if hits == 0:
+                                # print('Not enough voice time!')
                                 break
                             hits = hits - 1
                             # Adds user into the user_skill database if they are not there
@@ -111,15 +119,14 @@ class Background(commands.Cog):
                                 points = points + ppm * (total_crit + 1) * critical_power
                                 if msg == 0:
                                     break
-                            if hits == 0:
-                                break
+
 
                             lifetime_flowers = await self.client.pool.fetchval(
                                 '''SELECT lifetimeflowers FROM users WHERE user_id =%d''' % (int(member.id),))
-                            flowers_boost = 1 + lifetime_flowers * 0.001
+                            flowers_boost = 1 + float(lifetime_flowers) * 0.001
                             points = points * flowers_boost
 
-                            print(f'Points {points}')
+                            print(f'Points {points:,} to {member.name} for voice chat')
                             # Adds points to the database
                             await self.client.pool.execute(
                                 '''UPDATE users SET points = points+%s WHERE user_id = %s ''' % (
@@ -133,10 +140,13 @@ class Background(commands.Cog):
                             await self.client.pool.execute(
                                 '''UPDATE users SET voice_join_timestamp = $$%s$$ WHERE user_id = %s''' % (
                                 now, member.id))
+                            if hits == 0:
+                                break
 
     @voice_check.before_loop
     async def before_voice_check(self):
-        await self.bot.wait_until_ready()
+        # print('Loop is waiting')
+        await self.client.wait_until_ready()
 
 
 def setup(client):

@@ -45,6 +45,10 @@ async def create_db_pool():
                             prefix TEXT,
                             PRIMARY KEY(guild_id))''')
 
+    # Wipes all timestamps to prevent bugs when bot crashes
+    await client.pool.execute('''ALTER TABLE users DROP COLUMN voice_join_timestamp CASCADE''')
+    await client.pool.execute('''ALTER TABLE users ADD COLUMN IF NOT EXISTS voice_join_timestamp TIMESTAMP''')
+
     # New additions
 
     # Rebirth Currency (users)
@@ -163,13 +167,13 @@ async def on_message(message):
     points = points*flowers_boost
 
     # Adds points to the database
-    print(f'Points {int(points)}')
+    print(f'Points {int(points):,}')
     await client.pool.execute('''UPDATE users SET points = points+%s WHERE user_id = %s ''' % (points, int(member.id)))
     # Adds lifetime points to the database
     await client.pool.execute('''UPDATE users SET lifetime = lifetime+%s WHERE user_id = %s ''' % (points, int(member.id)))
 
     # Print the message
-    print(f'{message.author} in {message.guild.name}: {message.content}')
+    print(f'{message.author} in {message.guild.name}\'s {message.channel.name} channel: {message.content}')
     await client.process_commands(message)
 
 
@@ -197,11 +201,15 @@ async def on_voice_state_update(member, before, after):
             # Get the time in voice chat
             before_timestamp = await client.pool.fetchval('''SELECT voice_join_timestamp FROM users WHERE user_id = %s''' % (member.id))
             now = datetime.datetime.now()
+            if before_timestamp is None:
+                await client.pool.execute(
+                '''UPDATE users SET voice_join_timestamp = $$%s$$ WHERE user_id = %s''' % (
+                    now, member.id))
+                before_timestamp = now
             td = now - before_timestamp
             td_seconds = int(td.total_seconds())
             print(td_seconds)
             await client.pool.execute('''UPDATE users SET voice_time = voice_time + %s WHERE user_id = %s''' % (td_seconds, member.id))
-
             hits = round(td_seconds/30)
             while True:
                 if hits == 0:
@@ -282,7 +290,7 @@ async def on_voice_state_update(member, before, after):
                 flowers_boost = 1 + lifetime_flowers * 0.001
                 points = points * flowers_boost
 
-                print(f'Points {points}')
+                print(f'Points {points:,}')
                 # Adds points to the database
                 await client.pool.execute(
                     '''UPDATE users SET points = points+%s WHERE user_id = %s ''' % (points, int(member.id)))
@@ -308,9 +316,7 @@ async def on_ready():
         guild_list.append(guild.name)
         await client.pool.execute('''INSERT INTO guilds(guild_id, prefix) VALUES(%s, $$%s$$) ON CONFLICT DO NOTHING''' % (int(guild.id), '.'))
 
-    # Wipes all timestamps to prevent bugs when bot crashes
-    await client.pool.execute('''ALTER TABLE users DROP COLUMN voice_join_timestamp CASCADE''')
-    await client.pool.execute('''ALTER TABLE users ADD COLUMN IF NOT EXISTS voice_join_timestamp TIMESTAMP''')
+
 
 asyncio.get_event_loop().run_until_complete(create_db_pool())
 
