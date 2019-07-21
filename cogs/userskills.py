@@ -51,7 +51,7 @@ class UserSkills(commands.Cog):
             print('Upgrade multi-hit chance')
             user_points = await self.client.pool.fetchval('''SELECT points FROM users WHERE user_id = %s''' % member.id)
             if str.isdigit(amount) is True:
-                print('Upgrade initiated')
+                # print('Upgrade initiated')
                 cost_list = []
                 new_level = mc_level
                 if mc_cost < user_points:
@@ -79,7 +79,7 @@ class UserSkills(commands.Cog):
             print('Upgrade multi-hit factor')
             user_points = await self.client.pool.fetchval('''SELECT points FROM users WHERE user_id = %s''' % member.id)
             if str.isdigit(amount) is True:
-                print('Upgrade initiated')
+                # print('Upgrade initiated')
                 cost_list = []
                 new_level = mf_level
                 if mf_cost < user_points:
@@ -107,7 +107,7 @@ class UserSkills(commands.Cog):
             print('Upgrade critical chance')
             user_points = await self.client.pool.fetchval('''SELECT points FROM users WHERE user_id = %s''' % member.id)
             if str.isdigit(amount) is True:
-                print('Upgrade initiated')
+                # print('Upgrade initiated')
                 cost_list = []
                 new_level = cc_level
                 if cc_cost < user_points:
@@ -135,7 +135,7 @@ class UserSkills(commands.Cog):
             print('Upgrade critical power')
             user_points = await self.client.pool.fetchval('''SELECT points FROM users WHERE user_id = %s''' % member.id)
             if str.isdigit(amount) is True:
-                print('Upgrade initiated')
+                # print('Upgrade initiated')
                 cost_list = []
                 new_level = cp_level
                 if cp_cost < user_points:

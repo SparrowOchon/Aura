@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands
-import random
+import typing
 
 
 class Companion(commands.Cog):
@@ -19,9 +19,11 @@ class Companion(commands.Cog):
         embed.set_image(url=f'{img}')
         await ctx.send(embed=embed)
 
-    @commands.command()
-    async def shop(self, ctx):
-        await ctx.send('Working on it!')
+    @commands.command(aliases=['pet', 'pets'])
+    async def _pets(self, arg:typing.Optional[str] = '', selection=''):
+        await self.ctx.send('Working on it!')
+        if arg == '':
+            embed = discord.Embed(title='Companions', description='')
 
 
 def setup(client):

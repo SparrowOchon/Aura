@@ -37,6 +37,8 @@ class Rebirth(commands.Cog):
             await self.client.pool.execute('UPDATE user_skills SET multi_hit_factor = 0 WHERE user_id = %s' % member.id)
             await self.client.pool.execute('UPDATE user_skills SET critical_chance = 0 WHERE user_id = %s' % member.id)
             await self.client.pool.execute('UPDATE user_skills SET critical_power = 0 WHERE user_id = %s' % member.id)
+        elif confirm == 'help':
+            await ctx.send('Rebirth resets only your silver and upgrades. Lifetime flowers multiply your silver gain.')
 
         else:
             embed = discord.Embed(title='Rebirth Preview', description='')
