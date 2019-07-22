@@ -14,7 +14,7 @@ class Rebirth(commands.Cog):
         member = ctx.author
         lifetime = await self.client.pool.fetchval('''SELECT lifetime FROM users WHERE user_id =%d''' % (int(member.id),))
         lifetime_flowers = await self.client.pool.fetchval('''SELECT lifetimeflowers FROM users WHERE user_id =%d''' % (int(member.id),))
-        flowers = int(5*math.sqrt(int(lifetime)))
+        flowers = int((1/2000)*math.sqrt(int(lifetime)))
         if confirm == 'yes':
             await ctx.send('You have been reborn')
             embed = discord.Embed(title='Rebirth', description='')
