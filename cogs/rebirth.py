@@ -43,7 +43,7 @@ class Rebirth(commands.Cog):
             silver_emoji = self.client.get_emoji(601632365667811369)
             flower_emoji = self.client.get_emoji(601881173597093912)
             embed.add_field(name='Lifetime silver', value=f'{round(lifetime):,} {silver_emoji}', inline=True)
-#             embed.add_field(name='Flowers from rebirth', value=f'{round(flowers):,} {flower_emoji}', inline=False)
+            embed.add_field(name='Flowers from rebirth', value=f'{round(flowers):,} {flower_emoji}', inline=False)
             embed.add_field(name='Current Boost Factor', value=f'{round(1+(float(lifetime_flowers))*0.001):,}x', inline=True)
             embed.add_field(name='Final Boost Factor', value=f'{round(1+(flowers+float(lifetime_flowers))*0.001):,}x', inline=True)
             await ctx.send(embed=embed)

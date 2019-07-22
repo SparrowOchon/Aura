@@ -10,6 +10,7 @@ class UserSkills(commands.Cog):
         self.client = client
 
     @commands.command(aliases=['upgrades', 'up', 'skill', 'skills'])
+    @commands.cooldown(1, 1, commands.BucketType.user)
     async def upgrade(self, ctx, upgrade: typing.Optional[str] = '', amount: typing.Optional[str] = '1'):
         member = ctx.author
         if amount == 'max':

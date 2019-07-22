@@ -120,6 +120,12 @@ class Statistics(commands.Cog):
                 break
         await ctx.send(embed=embed)
 
+    # Info command
+    @commands.command(aliases=['info', 'information', 'i'])
+    async def _info(self, ctx):
+        ctx.send('Working on it')
+
+
 
 def setup(client):
     client.add_cog(Statistics(client))

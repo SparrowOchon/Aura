@@ -13,7 +13,7 @@ class Developer(commands.Cog):
         if ctx.author.id == 153699972443799552:
             await ctx.send(f'Hello master!')
         else:
-            self.ctx.send('I only serve Gryphticon')
+            await ctx.send('I only serve Gryphticon')
 
     @commands.command()
     async def grantpoints(self, ctx, user: discord.Member = None, amount: typing.Optional[int] = 5):
@@ -56,7 +56,6 @@ class Developer(commands.Cog):
         else:
             self.ctx.send('I only serve Gryphticon')
 
-
     @commands.command()
     async def reset(self, ctx, user: discord.Member = None):
         if ctx.author.id == 153699972443799552:
@@ -72,8 +71,18 @@ class Developer(commands.Cog):
                 'UPDATE users SET points = 0 WHERE user_id = %s' % target.id)
             await self.client.pool.execute(
                 'UPDATE users SET lifetime = 0 WHERE user_id = %s' % target.id)
+            await self.client.pool.execute(
+                'UPDATE user_skills SET multi_hit_chance = 0 WHERE user_id = %s' % target.id)
+            await self.client.pool.execute(
+                'UPDATE user_skills SET multi_hit_factor = 0 WHERE user_id = %s' % target.id)
+            await self.client.pool.execute(
+                'UPDATE user_skills SET critical_chance = 0 WHERE user_id = %s' % target.id)
+            await self.client.pool.execute(
+                'UPDATE user_skills SET critical_power = 0 WHERE user_id = %s' % target.id)
+            await ctx.send(f'{target.name}\'s progress was reset!')
+
         else:
-            self.ctx.send('I only serve Gryphticon')
+            await ctx.send('I only serve Gryphticon')
 
     @commands.command()
     async def populate(self, ctx):
@@ -84,9 +93,9 @@ class Developer(commands.Cog):
                 await self.client.pool.execute(
                     '''INSERT INTO guild_members(user_id, guild_id) VALUES(%s, %s) ON CONFLICT DO NOTHING''' % (
                     int(member.id), ctx.author.guild.id))
-                self.ctx.send('Guild leaderboards have been populated')
+                await ctx.send('Guild leaderboards have been populated')
         else:
-            self.ctx.send('I only serve Gryphticon')
+            await ctx.send('I only serve Gryphticon')
 
 
 def setup(client):
