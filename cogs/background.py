@@ -22,7 +22,8 @@ class Background(commands.Cog):
                 users = voice.members
                 if voice.members is None:
                     break
-                elif voice.id is not voice.guild.afk_channel.id:
+                # elif voice.id is not voice.guild.afk_channel.id:
+                else:
                     for member in users:
                         # Adds user to the database if they are not in it
                         await self.client.pool.execute(

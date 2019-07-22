@@ -4,7 +4,7 @@ import random
 import typing
 
 
-class Admin(commands.Cog):
+class Developer(commands.Cog):
     def __init__(self, client):
         self.client = client
 
@@ -13,10 +13,10 @@ class Admin(commands.Cog):
         if ctx.author.id == 153699972443799552:
             await ctx.send(f'Hello master!')
         else:
-            await ctx.send(f'You\'re not my owner!')
+            self.ctx.send('I only serve Gryphticon')
 
     @commands.command()
-    async def grantpoints(self, ctx, user: discord.Member = None, amount:typing.Optional[int] = 5):
+    async def grantpoints(self, ctx, user: discord.Member = None, amount: typing.Optional[int] = 5):
         if ctx.author.id == 153699972443799552:
             if user:
                 target = user
@@ -27,10 +27,10 @@ class Admin(commands.Cog):
             silver_emoji = self.client.get_emoji(601632365667811369)
             await ctx.send(f'{amount}{silver_emoji} granted to {target.name}')
         else:
-            await ctx.send(f'You\'re not my owner!')
+            self.ctx.send('I only serve Gryphticon')
 
     @commands.command()
-    async def grantflowers(self, ctx, user: discord.Member = None, amount:typing.Optional[int] = 5):
+    async def grantflowers(self, ctx, user: discord.Member = None, amount: typing.Optional[int] = 5):
         if ctx.author.id == 153699972443799552:
             if user:
                 target = user
@@ -41,10 +41,10 @@ class Admin(commands.Cog):
             flower_emoji = self.client.get_emoji(601881173597093912)
             await ctx.send(f'{amount}{flower_emoji} granted to {target.name}')
         else:
-            await ctx.send(f'You\'re not my owner!')
+            self.ctx.send('I only serve Gryphticon')
 
     @commands.command()
-    async def grantquanta(self, ctx, user: discord.Member = None, amount:typing.Optional[int] = 5):
+    async def grantquanta(self, ctx, user: discord.Member = None, amount: typing.Optional[int] = 5):
         if ctx.author.id == 153699972443799552:
             if user:
                 target = user
@@ -54,8 +54,40 @@ class Admin(commands.Cog):
             quanta_emoji = self.client.get_emoji(601881165791756318)
             await ctx.send(f'{amount}{quanta_emoji} granted to {target.name}')
         else:
-            await ctx.send(f'You\'re not my owner!')
+            self.ctx.send('I only serve Gryphticon')
+
+
+    @commands.command()
+    async def reset(self, ctx, user: discord.Member = None):
+        if ctx.author.id == 153699972443799552:
+            if user:
+                target = user
+            else:
+                target = ctx.author
+            await self.client.pool.execute(
+                'UPDATE users SET flowers = 0 WHERE user_id = %s' % target.id)
+            await self.client.pool.execute(
+                'UPDATE users SET lifetimeflowers = 0 WHERE user_id = %s' % target.id)
+            await self.client.pool.execute(
+                'UPDATE users SET points = 0 WHERE user_id = %s' % target.id)
+            await self.client.pool.execute(
+                'UPDATE users SET lifetime = 0 WHERE user_id = %s' % target.id)
+        else:
+            self.ctx.send('I only serve Gryphticon')
+
+    @commands.command()
+    async def populate(self, ctx):
+        if ctx.author.id == 153699972443799552:
+            everyone = await self.client.pool.fetchval(
+                '''SELECT user_id FROM users''')
+            for member in everyone:
+                await self.client.pool.execute(
+                    '''INSERT INTO guild_members(user_id, guild_id) VALUES(%s, %s) ON CONFLICT DO NOTHING''' % (
+                    int(member.id), ctx.author.guild.id))
+                self.ctx.send('Guild leaderboards have been populated')
+        else:
+            self.ctx.send('I only serve Gryphticon')
 
 
 def setup(client):
-    client.add_cog(Admin(client))
+    client.add_cog(Developer(client))

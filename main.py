@@ -45,6 +45,14 @@ async def create_db_pool():
                             prefix TEXT,
                             PRIMARY KEY(guild_id))''')
 
+    # Creates the guild members database
+    await client.pool.execute('''CREATE TABLE IF NOT EXISTS guild_members( 
+                            user_id BIGINT,
+                            guild_id BIGINT,
+                            PRIMARY KEY(user_id, guild_id))''')
+
+    await client.pool.execute('''ALTER TABLE users ADD COLUMN IF NOT EXISTS name TEXT''')
+
     # Wipes all timestamps to prevent bugs when bot crashes
     await client.pool.execute('''ALTER TABLE users DROP COLUMN voice_join_timestamp CASCADE''')
     await client.pool.execute('''ALTER TABLE users ADD COLUMN IF NOT EXISTS voice_join_timestamp TIMESTAMP''')
@@ -57,6 +65,15 @@ async def create_db_pool():
 
     # Premium Currency (users)
     await client.pool.execute('''ALTER TABLE users ADD COLUMN IF NOT EXISTS quanta DECIMAL DEFAULT 0''')
+
+    # Leaderboards (guild_members)
+    await client.pool.execute('''ALTER TABLE guild_members ADD COLUMN IF NOT EXISTS silver DECIMAL DEFAULT 0''')
+    await client.pool.execute('''ALTER TABLE guild_members ADD COLUMN IF NOT EXISTS lifetime DECIMAL DEFAULT 0''')
+    await client.pool.execute('''ALTER TABLE guild_members ADD COLUMN IF NOT EXISTS flowers DECIMAL DEFAULT 0''')
+    await client.pool.execute('''ALTER TABLE guild_members ADD COLUMN IF NOT EXISTS lifetimeflowers DECIMAL DEFAULT 0''')
+
+    # Create indexes
+    # await client.pool.execute('''CREATE INDEX users_desc''')
 
 
 # Setting up the prefix
@@ -86,6 +103,7 @@ async def on_message(message):
 
     # Add users into the database if they're not there
     await client.pool.execute('''INSERT INTO users(user_id, text_messages, voice_time, points, lifetime, voice_join_timestamp) VALUES(%s, %s, %s, %s, %s, NULL) ON CONFLICT DO NOTHING''' % (int(member.id), int(0), int(0), int(0), int(0)))
+    await client.pool.execute('''INSERT INTO guild_members(user_id, guild_id) VALUES(%s, %s) ON CONFLICT DO NOTHING''' % (int(member.id), int(member.guild.id)))
 
     # Adds user into the user_skill database if they are not there
     await client.pool.execute(
@@ -286,10 +304,8 @@ async def on_voice_state_update(member, before, after):
                 # print(f'CC {critical_chance}%')
                 while True:
                     msg = msg - 1
-                    hit = 0
                     if random.randint(1, 100) < critical_chance:
                         # print('Critical proc!')
-                        hit = 1
                         points = points + critical_power * ppm
                     else:
                         points = points + ppm

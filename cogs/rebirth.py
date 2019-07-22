@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 import random
 import typing
+import math
 
 
 class Rebirth(commands.Cog):
@@ -13,16 +14,14 @@ class Rebirth(commands.Cog):
         member = ctx.author
         lifetime = await self.client.pool.fetchval('''SELECT lifetime FROM users WHERE user_id =%d''' % (int(member.id),))
         lifetime_flowers = await self.client.pool.fetchval('''SELECT lifetimeflowers FROM users WHERE user_id =%d''' % (int(member.id),))
-        rate = 0.0000001
-        inverse_rate = rate**(-1)
-        flowers = int(lifetime) / int(inverse_rate)
+        flowers = int(5*math.sqrt(int(lifetime)))
         if confirm == 'yes':
             await ctx.send('You have been reborn')
             embed = discord.Embed(title='Rebirth', description='')
             silver_emoji = self.client.get_emoji(601632365667811369)
             flower_emoji = self.client.get_emoji(601881173597093912)
             embed.add_field(name='Lifetime silver', value=f'{round(lifetime):,} {silver_emoji}', inline=True)
-            embed.add_field(name='Conversion rate', value=f'{round(inverse_rate):,} {silver_emoji} per {flower_emoji}', inline=True)
+            # embed.add_field(name='Conversion rate', value=f'{round(inverse_rate):,} {silver_emoji} per {flower_emoji}', inline=True)
             embed.add_field(name='Flowers from rebirth', value=f'{round(flowers):,} {flower_emoji}', inline=False)
             embed.add_field(name='Previous Boost Factor', value=f'{round(1+(float(lifetime_flowers))*0.001):,}x', inline=True)
             embed.add_field(name='Current Boost Factor', value=f'{round(1+(flowers+float(lifetime_flowers))*0.001):,}x', inline=True)
@@ -39,14 +38,12 @@ class Rebirth(commands.Cog):
             await self.client.pool.execute('UPDATE user_skills SET critical_power = 0 WHERE user_id = %s' % member.id)
         elif confirm == 'help':
             await ctx.send('Rebirth resets only your silver and upgrades. Lifetime flowers multiply your silver gain.')
-
         else:
             embed = discord.Embed(title='Rebirth Preview', description='')
             silver_emoji = self.client.get_emoji(601632365667811369)
             flower_emoji = self.client.get_emoji(601881173597093912)
             embed.add_field(name='Lifetime silver', value=f'{round(lifetime):,} {silver_emoji}', inline=True)
-            embed.add_field(name='Conversion rate', value=f'{round(inverse_rate):,} {silver_emoji} per {flower_emoji}', inline=True)
-            embed.add_field(name='Flowers from rebirth', value=f'{round(flowers):,} {flower_emoji}', inline=False)
+#             embed.add_field(name='Flowers from rebirth', value=f'{round(flowers):,} {flower_emoji}', inline=False)
             embed.add_field(name='Current Boost Factor', value=f'{round(1+(float(lifetime_flowers))*0.001):,}x', inline=True)
             embed.add_field(name='Final Boost Factor', value=f'{round(1+(flowers+float(lifetime_flowers))*0.001):,}x', inline=True)
             await ctx.send(embed=embed)
