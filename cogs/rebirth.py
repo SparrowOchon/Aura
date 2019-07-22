@@ -23,8 +23,8 @@ class Rebirth(commands.Cog):
             embed.add_field(name='Lifetime silver', value=f'{round(lifetime):,} {silver_emoji}', inline=True)
             # embed.add_field(name='Conversion rate', value=f'{round(inverse_rate):,} {silver_emoji} per {flower_emoji}', inline=True)
             embed.add_field(name='Flowers from rebirth', value=f'{round(flowers):,} {flower_emoji}', inline=False)
-            embed.add_field(name='Previous Boost Factor', value=f'{round(1+(float(lifetime_flowers))*0.001):,}x', inline=True)
-            embed.add_field(name='Current Boost Factor', value=f'{round(1+(flowers+float(lifetime_flowers))*0.001):,}x', inline=True)
+            embed.add_field(name='Previous Boost Factor', value=f'{round(1+(float(lifetime_flowers))*0.01):,}x', inline=True)
+            embed.add_field(name='Current Boost Factor', value=f'{round(1+(flowers+float(lifetime_flowers))*0.01):,}x', inline=True)
             await ctx.send(embed=embed)
             # Give flowers
             await self.client.pool.execute('UPDATE users SET lifetimeflowers = lifetimeflowers+%s WHERE user_id = %s' % (flowers, member.id))

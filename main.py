@@ -190,7 +190,7 @@ async def on_message(message):
         points = points+ppm
     # Rebirth Boost
     lifetime_flowers = await client.pool.fetchval('''SELECT lifetimeflowers FROM users WHERE user_id =%d''' % (int(member.id),))
-    flowers_boost = 1+float(lifetime_flowers)*0.001
+    flowers_boost = 1+float(lifetime_flowers)*0.01
     points = points*flowers_boost
 
     # Adds points to the database
@@ -323,7 +323,7 @@ async def on_voice_state_update(member, before, after):
 
                 lifetime_flowers = await client.pool.fetchval(
                     '''SELECT lifetimeflowers FROM users WHERE user_id =%d''' % (int(member.id),))
-                flowers_boost = 1 + lifetime_flowers * 0.001
+                flowers_boost = 1 + lifetime_flowers * 0.01
                 points = points * flowers_boost
 
                 print(f'Points {points:,}')
