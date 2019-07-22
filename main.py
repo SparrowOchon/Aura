@@ -72,6 +72,8 @@ async def create_db_pool():
     await client.pool.execute('''ALTER TABLE guild_members ADD COLUMN IF NOT EXISTS flowers DECIMAL DEFAULT 0''')
     await client.pool.execute('''ALTER TABLE guild_members ADD COLUMN IF NOT EXISTS lifetimeflowers DECIMAL DEFAULT 0''')
 
+    await client.pool.execute('''ALTER TABLE guilds ADD COLUMN IF NOT EXISTS count DECIMAL DEFAULT 0''')
+
     # Create indexes
     # await client.pool.execute('''CREATE INDEX users_desc''')
 
@@ -340,7 +342,7 @@ async def on_voice_state_update(member, before, after):
 @client.event
 async def on_ready():
     print('Bot is ready')
-    guild_list = []
+
 
     channel = client.get_channel(601539314874187776)
     now = datetime.datetime.now()
@@ -348,9 +350,10 @@ async def on_ready():
     await channel.send(embed=embed)
 
     # Add all guilds to the guild list
+    guild_list = []
     for guild in list(client.guilds):
         guild_list.append(guild.name)
-        await client.pool.execute('''INSERT INTO guilds(guild_id, prefix) VALUES(%s, $$%s$$) ON CONFLICT DO NOTHING''' % (int(guild.id), '.'))
+        await client.pool.execute('''INSERT INTO guilds(guild_id, prefix, count) VALUES(%s, $$%s$$, %s) ON CONFLICT DO NOTHING''' % (int(guild.id), '.', int(guild.member_count)))
 
 
 asyncio.get_event_loop().run_until_complete(create_db_pool())
