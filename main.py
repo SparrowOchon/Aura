@@ -89,6 +89,8 @@ async def get_prefix(bot, message):
     return commands.when_mentioned_or(str(prefix))(bot, message)
 
 client = commands.Bot(command_prefix=get_prefix)
+client.remove_command('help')
+
 # Loop to look through cogs folder and load all cogs contained within it
 for filename in os.listdir('./cogs'):
     if filename.endswith('.py'):
@@ -323,7 +325,7 @@ async def on_voice_state_update(member, before, after):
 
                 lifetime_flowers = await client.pool.fetchval(
                     '''SELECT lifetimeflowers FROM users WHERE user_id =%d''' % (int(member.id),))
-                flowers_boost = 1 + lifetime_flowers * 0.01
+                flowers_boost = 1 + float(lifetime_flowers) * 0.01
                 points = points * flowers_boost
 
                 print(f'Points {points:,}')

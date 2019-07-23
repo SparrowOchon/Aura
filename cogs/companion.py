@@ -20,7 +20,7 @@ class Companion(commands.Cog):
         await ctx.send(embed=embed)
 
     @commands.command(aliases=['pet', 'pets'])
-    async def _pets(self, arg:typing.Optional[str] = '', selection=''):
+    async def _pets(self, arg: typing.Optional[str] = '', selection=''):
         await self.ctx.send('Working on it!')
         if arg == '':
             embed = discord.Embed(title='Companions', description='')
