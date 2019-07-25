@@ -11,12 +11,12 @@ import random
 # Logs to console
 logging.basicConfig(level=logging.INFO)
 
-token = 'MjcyNTAzNTMxMDIwMzUzNTM2.XTIOPg.XSaDU9PGLis92rJhQQ6SdODMS8A'
-
 
 # Database Operations
 async def create_db_pool():
     client.pool = await asyncpg.create_pool(host='127.0.0.1', database='GameBot', user='postgres', password='admin123')
+
+    client.token = await client.pool.fetchval('''SELECT token FROM bot''')
 
     # Creates the user database
     await client.pool.execute('''CREATE TABLE IF NOT EXISTS users( 
@@ -102,6 +102,8 @@ for filename in os.listdir('./cogs'):
 @client.event
 async def on_message(message):
     if message.author == client.user:
+        return
+    if message.author.bot:
         return
     member = message.author
 
@@ -358,4 +360,4 @@ async def on_ready():
 
 asyncio.get_event_loop().run_until_complete(create_db_pool())
 # Bot token
-client.run(token)
+client.run(client.token)
