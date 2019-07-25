@@ -188,8 +188,6 @@ async def on_message(message):
     if int(critical_hits) > 0:
         # print('Critical hits detected')
         points = points*critical_hits*critical_power*ppm
-    else:
-        points = points+ppm
     # Rebirth Boost
     lifetime_flowers = await client.pool.fetchval('''SELECT lifetimeflowers FROM users WHERE user_id =%d''' % (int(member.id),))
     flowers_boost = 1+float(lifetime_flowers)*0.01
