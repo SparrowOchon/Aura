@@ -111,7 +111,7 @@ class Statistics(commands.Cog):
             points_value = cur[f'{currency}']
             user = self.client.get_user(user_id_value)
             if user is None:
-                username = f'User ID: {user_id_value}'
+                username = f'Anonymous User'
             else:
                 username = user.name
             embed.add_field(name=f'#{int(iteration)+int(1)} - {username}', value=f'{int(points_value):,} {name}', inline=False)
