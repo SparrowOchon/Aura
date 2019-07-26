@@ -343,12 +343,9 @@ async def on_voice_state_update(member, before, after):
 # What to do when the bot finishes loading
 @client.event
 async def on_ready():
-    print('Bot is ready')
-
-
     channel = client.get_channel(601539314874187776)
     now = datetime.datetime.now()
-    embed = discord.Embed(title='This bot is online', description=f'{now}')
+    embed = discord.Embed(title=f'{client.user.name} is online', description=f'{now}')
     await channel.send(embed=embed)
 
     # Add all guilds to the guild list

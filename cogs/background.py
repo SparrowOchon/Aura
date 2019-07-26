@@ -129,7 +129,7 @@ class Background(commands.Cog):
 
                             lifetime_flowers = await self.client.pool.fetchval(
                                 '''SELECT lifetimeflowers FROM users WHERE user_id =%d''' % (int(member.id),))
-                            flowers_boost = 1 + float(lifetime_flowers) * 0.001
+                            flowers_boost = 1 + float(lifetime_flowers) * 0.01
                             points = points * flowers_boost
 
                             print(f'Points {round(points):,} to {member.name} for voice chat')

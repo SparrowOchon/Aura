@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 import typing
+import random
 
 
 class Companion(commands.Cog):
@@ -19,11 +20,26 @@ class Companion(commands.Cog):
         embed.set_image(url=f'{img}')
         await ctx.send(embed=embed)
 
-    @commands.command(aliases=['pet', 'pets'])
-    async def _pets(self, arg: typing.Optional[str] = '', selection=''):
-        await self.ctx.send('Working on it!')
-        if arg == '':
-            embed = discord.Embed(title='Companions', description='')
+    @commands.command()
+    async def shop(self, ctx, arg: typing.Optional[int] = 1):
+        await ctx.send('Working on it!')
+        if arg == 1:
+            embed = discord.Embed(title='Companions', description=f'')
+            await ctx.send(embed=embed)
+
+    @commands.command()
+    async def opentest(self, ctx):
+        number = random.randint(1, 1000)
+        if number >= 1 and number <= 900:
+            await ctx.send('Common')
+        elif number >= 901 and number <= 950:
+            await ctx.send('Rare')
+        elif number >= 951 and number <= 980:
+            await ctx.send('Epic')
+        elif number >= 981 and number <= 995:
+            await ctx.send('Legendary')
+        elif number >= 996 and number <= 1000:
+            await ctx.send('Mythical')
 
 
 def setup(client):

@@ -40,7 +40,9 @@ class UserSkills(commands.Cog):
         cp_cost = 1.04**(cp_level+1)
 
         if upgrade == 'help' or upgrade == '':
-            embed = discord.Embed(title='Upgrades', description='Upgrade your skills to earn more points')
+            silver_emoji = self.client.get_emoji(601632365667811369)
+            points = await self.client.pool.fetchval('''SELECT POINTS FROM users WHERE user_id =%d''' % (int(member.id)))
+            embed = discord.Embed(title='Skill Upgrades', description=f'Current silver: {int(points)} {silver_emoji}')
             embed.add_field(name=f'[MC] Multi-hit Chance (Level {round(mc_level)})', value=f'Chance to proc multiple messages that will also apply other upgrades. It does not proc itself. \n Chance: {round(mc_level)*0.5}% \n Cost: {round(mc_cost):,}', inline=False)
             embed.add_field(name=f'[MF] Multi-hit Factor (Level {round(mf_level)})', value=f'Number of multi-hits on proc \n Factor: {2+(mf_level)}x \n Cost: {round(mf_cost):,}', inline=False)
             embed.add_field(name=f'[CC] Critical Chance (Level {round(cc_level)})', value=f'Chance to get critical hits \n Chance: {cc_level}% \n Cost: {round(cc_cost):,}', inline=False)
