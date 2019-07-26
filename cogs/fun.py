@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+from discord import ChannelType
 import random
 
 
@@ -38,6 +39,18 @@ class Fun(commands.Cog):
     @commands.command()
     async def bilo(self, ctx):
         await ctx.send('Bilo is noob')
+
+    @commands.command(aliases=['screenshare', 'share', 'screen', 'sharescreen'])
+    async def _sharescreen(self, ctx):
+        voice_channels = (vc for vc in ctx.message.guild.channels if vc.type == ChannelType.voice)
+        for voice in voice_channels:
+            users = voice.members
+            if users is None:
+                break
+            else:
+                for member in users:
+                    if member.id == ctx.message.author.id:
+                        await ctx.send(f'**Screenshare for {voice.name}:** \n https://discordapp.com/channels/{ctx.message.guild.id}/{voice.id}')
 
 
 def setup(client):
