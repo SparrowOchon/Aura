@@ -15,7 +15,9 @@ class Rebirth(commands.Cog):
         lifetime = await self.client.pool.fetchval('''SELECT lifetime FROM users WHERE user_id =%d''' % (int(member.id),))
         lifetime_flowers = await self.client.pool.fetchval('''SELECT lifetimeflowers FROM users WHERE user_id =%d''' % (int(member.id),))
         flowers = int((1/2000)*math.sqrt(int(lifetime)))
-        if confirm == 'yes':
+        if int(lifetime) < 100000000000:
+            await ctx.send(f'You need at least 100,000,000,000 lifetime silver to be reborn! Your current lifetime silver is {int(lifetime):,}.')
+        elif confirm == 'yes':
             await ctx.send('You have been reborn')
             embed = discord.Embed(title='Rebirth', description='')
             silver_emoji = self.client.get_emoji(601632365667811369)
@@ -29,6 +31,7 @@ class Rebirth(commands.Cog):
             # Give flowers
             await self.client.pool.execute('UPDATE users SET lifetimeflowers = lifetimeflowers+%s WHERE user_id = %s' % (flowers, member.id))
             await self.client.pool.execute('UPDATE users SET flowers = flowers+%s WHERE user_id = %s' % (flowers, member.id))
+            await self.client.pool.execute('UPDATE users SET rebirth = rebirth+1 WHERE user_id = %s' % member.id)
             # Reset
             await self.client.pool.execute('UPDATE users SET lifetime = 0 WHERE user_id = %s' % member.id)
             await self.client.pool.execute('UPDATE users SET points = 0 WHERE user_id = %s' % member.id)

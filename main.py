@@ -65,6 +65,7 @@ async def create_db_pool():
 
     # Premium Currency (users)
     await client.pool.execute('''ALTER TABLE users ADD COLUMN IF NOT EXISTS quanta DECIMAL DEFAULT 0''')
+    await client.pool.execute('''ALTER TABLE users ADD COLUMN IF NOT EXISTS rebirth DECIMAL DEFAULT 0''')
 
     # Leaderboards (guild_members)
     await client.pool.execute('''ALTER TABLE guild_members ADD COLUMN IF NOT EXISTS silver DECIMAL DEFAULT 0''')

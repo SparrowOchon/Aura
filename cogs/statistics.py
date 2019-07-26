@@ -37,12 +37,14 @@ class Statistics(commands.Cog):
         flowers = await self.client.pool.fetchval('''SELECT flowers FROM users WHERE user_id =%d''' % (int(target.id),))
         lifetime_flowers = await self.client.pool.fetchval('''SELECT lifetimeflowers FROM users WHERE user_id =%d''' % (int(target.id),))
         quanta = await self.client.pool.fetchval('''SELECT quanta FROM users WHERE user_id =%d''' % (int(target.id),))
+        rebirths = await self.client.pool.fetchval('''SELECT rebirth FROM users WHERE user_id =%d''' % (int(target.id),))
         # Creating a nice looking embed
-        embed = discord.Embed(title=f'Profile Information', description=f'Requested by {ctx.author}')
+        embed = discord.Embed(title=f'', description=f'')
         # embed.add_field(name=f'Discord User ID', value=f'{target.id}', inline=False)
         embed.add_field(name=f'Text messages', value=f'{msg_count} messages', inline=False)
         vc_time = time.strftime('%H hours, %M minutes and %S seconds', time.gmtime(vc_count))
         embed.add_field(name=f'Time in voice chat', value=f'{vc_time}', inline=False)
+        embed.add_field(name=f'Rebirths', value=f'{rebirths}', inline=False)
         silver_emoji = self.client.get_emoji(601632365667811369)
         embed.add_field(name=f'Silver', value=f'{round(points):,} {silver_emoji}', inline=True)
         embed.add_field(name=f'Lifetime silver', value=f'{round(lifetime):,} {silver_emoji}', inline=True)
@@ -51,6 +53,7 @@ class Statistics(commands.Cog):
         embed.add_field(name=f'Quanta', value=f'{round(quanta):,} {quanta_emoji}', inline=False)
         embed.add_field(name=f'Flower', value=f'{round(flowers):,} {flower_emoji}', inline=True)
         embed.add_field(name=f'Lifetime Flower', value=f'{round(lifetime_flowers):,} {flower_emoji}', inline=True)
+        embed.set_footer(text=f"Requested by {ctx.author}")
         embed.set_author(name=target, icon_url=target.avatar_url)
         await ctx.send(embed=embed)
 
