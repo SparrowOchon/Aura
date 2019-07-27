@@ -25,7 +25,6 @@ class DiscordBotsOrgAPI(commands.Cog):
             await asyncio.sleep(1800)
 
 
-
 def setup(client):
     global logger
     logger = logging.getLogger('client')

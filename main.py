@@ -28,6 +28,12 @@ async def create_db_pool():
                         voice_join_timestamp TIMESTAMP,
                         PRIMARY KEY(user_id))''')
 
+    # Creates the user boost database
+    await client.pool.execute('''CREATE TABLE IF NOT EXISTS boosts( 
+                        user_id BIGINT,
+                        dbl_vote TIMESTAMP,
+                        PRIMARY KEY(user_id))''')
+
     # Creates the user skill database
     await client.pool.execute('''CREATE TABLE IF NOT EXISTS user_skills( 
                         user_id BIGINT,
@@ -45,7 +51,7 @@ async def create_db_pool():
                             prefix TEXT,
                             PRIMARY KEY(guild_id))''')
 
-    # Creates the user skill database
+    # Creates the pets database
     await client.pool.execute('''CREATE TABLE IF NOT EXISTS pet_inventory( 
                         id BIGSERIAL,
                         user_id BIGINT,

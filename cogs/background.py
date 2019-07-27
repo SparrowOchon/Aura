@@ -3,6 +3,7 @@ from discord.ext import tasks, commands
 from discord import ChannelType
 import random
 import datetime
+import dbl
 
 
 class Background(commands.Cog):
@@ -158,6 +159,8 @@ class Background(commands.Cog):
         await self.client.wait_until_ready()
 
     # @tasks.loop(seconds=300)
+    # async def vote_check(self):
+    #
 
 
 def setup(client):
