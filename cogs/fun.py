@@ -43,6 +43,7 @@ class Fun(commands.Cog):
     @commands.command(aliases=['screenshare', 'share', 'screen', 'sharescreen'])
     async def _sharescreen(self, ctx):
         voice_channels = (vc for vc in ctx.message.guild.channels if vc.type == ChannelType.voice)
+        found = 0
         for voice in voice_channels:
             users = voice.members
             if users is None:
@@ -51,6 +52,9 @@ class Fun(commands.Cog):
                 for member in users:
                     if member.id == ctx.message.author.id:
                         await ctx.send(f'**Screenshare for {voice.name}:** \n https://discordapp.com/channels/{ctx.message.guild.id}/{voice.id}')
+                        found = 1
+        if found == 0:
+            await ctx.send('You must be in a voice channel in this server to use this command!')
 
 
 def setup(client):

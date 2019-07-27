@@ -78,8 +78,8 @@ class Background(commands.Cog):
                             hits = hits - 1
                             # print(f'Checking voice time of {member.name}')
                             # Calculates multi-hit
-                            multi_chance = mc_level * 0.5
-                            multi_factor = 2 + (mf_level)
+                            multi_chance = float(mc_level) * 0.5
+                            multi_factor = 2 + mf_level
                             multi_hits = 0
                             if multi_chance > 100:
                                 # print('Multi-hit chance above 100!')
