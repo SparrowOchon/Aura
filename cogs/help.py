@@ -6,8 +6,8 @@ class Help(commands.Cog):
     def __init__(self, client):
         self.client = client
 
-    @commands.command()
-    async def help(self, ctx, cmd:typing.Optional[str] = ''):
+    @commands.command(aliases=['help', 'command', 'commands'])
+    async def _help(self, ctx, cmd:typing.Optional[str] = ''):
         if cmd == '':
             embed = discord.Embed(title='Commands', description=f'Use {ctx.prefix}help command to learn more about each commands. \n e.g. \"{ctx.prefix}help profile\"')
             embed.add_field(name=f'Economy', value=f'`upgrade`, `rebirth`')
