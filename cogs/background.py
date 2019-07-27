@@ -157,6 +157,8 @@ class Background(commands.Cog):
         # print('Loop is waiting')
         await self.client.wait_until_ready()
 
+    # @tasks.loop(seconds=300)
+
 
 def setup(client):
     client.add_cog(Background(client))
