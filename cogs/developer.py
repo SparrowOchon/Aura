@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 import random
 import typing
+import datetime
 
 
 class Developer(commands.Cog):
@@ -96,6 +97,23 @@ class Developer(commands.Cog):
                 await ctx.send('Guild leaderboards have been populated')
         else:
             await ctx.send('I only serve Gryphticon')
+
+    @commands.command()
+    async def givevoteboost(self,ctx, user: discord.Member = None):
+        if ctx.author.id == 153699972443799552:
+            if user:
+                target = user
+            else:
+                target = ctx.author
+        now = datetime.datetime.now()
+        duration = 720 # 720 minutes = 12 hours
+        factor = 2
+        await self.client.pool.execute('''INSERT INTO boosts(user_id, type, start_time, duration, factor) VALUES($$%s$$, $$%s$$, $$%s$$, $$%s$$, $$%s$$)''' % (target.id, 'vote', now, duration, factor))
+        await ctx.send(f'Vote boost was given to {target.display_name}')
+
+    @commands.command()
+    async def checkboosts(self, ctx, user: discord.Member = None):
+        await self.client.pool.execute('DELETE FROM boosts WHERE make_interval(mins := duration) < now()-start_time''')
 
 
 def setup(client):

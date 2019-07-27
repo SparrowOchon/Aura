@@ -43,7 +43,7 @@ class Statistics(commands.Cog):
         # embed.add_field(name=f'Discord User ID', value=f'{target.id}', inline=False)
         embed.add_field(name=f'Text messages', value=f'{msg_count} messages', inline=False)
         vc_time = time.strftime('%H hours, %M minutes and %S seconds', time.gmtime(vc_count))
-        print(str(target.avatar_url))
+        # print(str(target.avatar_url))
         embed.set_thumbnail(url=target.avatar_url)
         embed.add_field(name=f'Time in voice chat', value=f'{vc_time}', inline=False)
         silver_emoji = self.client.get_emoji(601632365667811369)

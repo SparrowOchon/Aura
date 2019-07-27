@@ -6,6 +6,7 @@ import asyncpg
 import logging
 import datetime
 import random
+import numpy
 
 
 # Logs to console
@@ -27,12 +28,15 @@ async def create_db_pool():
                         lifetime DECIMAL,
                         voice_join_timestamp TIMESTAMP,
                         PRIMARY KEY(user_id))''')
+    await client.pool.execute('''ALTER TABLE users ADD COLUMN IF NOT EXISTS name TEXT''')
 
     # Creates the user boost database
-    await client.pool.execute('''CREATE TABLE IF NOT EXISTS boosts( 
+    await client.pool.execute('''CREATE TABLE IF NOT EXISTS boosts(
                         user_id BIGINT,
-                        dbl_vote TIMESTAMP,
-                        PRIMARY KEY(user_id))''')
+                        type text,
+                        start_time TIMESTAMP,
+                        duration INTEGER,
+                        factor BIGINT)''')
 
     # Creates the user skill database
     await client.pool.execute('''CREATE TABLE IF NOT EXISTS user_skills( 
@@ -44,12 +48,18 @@ async def create_db_pool():
                         status_chance BIGINT,
                         status_length BIGINT,
                         PRIMARY KEY(user_id))''')
+    await client.pool.execute('''ALTER TABLE users ADD COLUMN IF NOT EXISTS flowers DECIMAL DEFAULT 0''')
+    await client.pool.execute('''ALTER TABLE users ADD COLUMN IF NOT EXISTS lifetimeflowers DECIMAL DEFAULT 0''')
+    await client.pool.execute('''ALTER TABLE users ADD COLUMN IF NOT EXISTS quanta DECIMAL DEFAULT 0''')
+    await client.pool.execute('''ALTER TABLE users ADD COLUMN IF NOT EXISTS rebirth DECIMAL DEFAULT 0''')
 
     # Creates the guild database
     await client.pool.execute('''CREATE TABLE IF NOT EXISTS guilds( 
                             guild_id BIGINT,
                             prefix TEXT,
                             PRIMARY KEY(guild_id))''')
+
+    await client.pool.execute('''ALTER TABLE guilds ADD COLUMN IF NOT EXISTS count DECIMAL DEFAULT 0''')
 
     # Creates the pets database
     await client.pool.execute('''CREATE TABLE IF NOT EXISTS pet_inventory( 
@@ -65,33 +75,14 @@ async def create_db_pool():
                             user_id BIGINT,
                             guild_id BIGINT,
                             PRIMARY KEY(user_id, guild_id))''')
-
-    await client.pool.execute('''ALTER TABLE users ADD COLUMN IF NOT EXISTS name TEXT''')
-
-    # Wipes all timestamps to prevent bugs when bot crashes
-    await client.pool.execute('''ALTER TABLE users DROP COLUMN voice_join_timestamp CASCADE''')
-    await client.pool.execute('''ALTER TABLE users ADD COLUMN IF NOT EXISTS voice_join_timestamp TIMESTAMP''')
-
-    # New additions
-
-    # Rebirth Currency (users)
-    await client.pool.execute('''ALTER TABLE users ADD COLUMN IF NOT EXISTS flowers DECIMAL DEFAULT 0''')
-    await client.pool.execute('''ALTER TABLE users ADD COLUMN IF NOT EXISTS lifetimeflowers DECIMAL DEFAULT 0''')
-
-    # Premium Currency (users)
-    await client.pool.execute('''ALTER TABLE users ADD COLUMN IF NOT EXISTS quanta DECIMAL DEFAULT 0''')
-    await client.pool.execute('''ALTER TABLE users ADD COLUMN IF NOT EXISTS rebirth DECIMAL DEFAULT 0''')
-
-    # Leaderboards (guild_members)
     await client.pool.execute('''ALTER TABLE guild_members ADD COLUMN IF NOT EXISTS silver DECIMAL DEFAULT 0''')
     await client.pool.execute('''ALTER TABLE guild_members ADD COLUMN IF NOT EXISTS lifetime DECIMAL DEFAULT 0''')
     await client.pool.execute('''ALTER TABLE guild_members ADD COLUMN IF NOT EXISTS flowers DECIMAL DEFAULT 0''')
     await client.pool.execute('''ALTER TABLE guild_members ADD COLUMN IF NOT EXISTS lifetimeflowers DECIMAL DEFAULT 0''')
 
-    await client.pool.execute('''ALTER TABLE guilds ADD COLUMN IF NOT EXISTS count DECIMAL DEFAULT 0''')
-
-    # Create indexes
-    # await client.pool.execute('''CREATE INDEX users_desc''')
+    # Wipes all timestamps to prevent bugs when bot crashes
+    await client.pool.execute('''ALTER TABLE users DROP COLUMN voice_join_timestamp CASCADE''')
+    await client.pool.execute('''ALTER TABLE users ADD COLUMN IF NOT EXISTS voice_join_timestamp TIMESTAMP''')
 
 
 # Setting up the prefix
@@ -206,10 +197,12 @@ async def on_message(message):
     if int(critical_hits) > 0:
         # print('Critical hits detected')
         points = points*critical_hits*critical_power*ppm
-    # Rebirth Boost
+    # Boosts
     lifetime_flowers = await client.pool.fetchval('''SELECT lifetimeflowers FROM users WHERE user_id =%d''' % (int(member.id),))
     flowers_boost = 1+float(lifetime_flowers)*0.01
-    points = points*flowers_boost
+    factor_list = await client.pool.fetch('''SELECT factor FROM boosts WHERE user_id = %s''' % member.id)
+    factor = numpy.prod(factor_list)
+    points = points*flowers_boost*factor
 
     # Adds points to the database
     print(f'Points {int(points):,}')

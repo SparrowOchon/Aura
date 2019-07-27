@@ -3,7 +3,6 @@ from discord.ext import tasks, commands
 from discord import ChannelType
 import random
 import datetime
-import dbl
 
 
 class Background(commands.Cog):
@@ -158,9 +157,13 @@ class Background(commands.Cog):
         # print('Loop is waiting')
         await self.client.wait_until_ready()
 
-    # @tasks.loop(seconds=300)
-    # async def vote_check(self):
-    #
+    @tasks.loop(seconds=300)
+    async def server_count_status(self):
+        count = 0
+
+    @tasks.loop(seconds=60)
+    async def boost_check(self):
+        await self.client.pool.execute('DELETE FROM boosts WHERE make_interval(mins := duration) < now()-start_time''')
 
 
 def setup(client):
