@@ -27,6 +27,9 @@ class Background(commands.Cog):
                     for member in users:
                         # Adds user to the database if they are not in it
                         await self.client.pool.execute(
+                            '''INSERT INTO user_skills(user_id, multi_hit_chance, multi_hit_factor, critical_chance, critical_power, status_chance, status_length) VALUES(%s, %s, %s, %s, %s, %s, %s) ON CONFLICT DO NOTHING''' % (
+                            int(member.id), 0, 0, 0, 0, 0, 0))
+                        await self.client.pool.execute(
                             '''INSERT INTO users(user_id, text_messages, voice_time, points, lifetime, voice_join_timestamp) VALUES(%s, %s, %s, %s, %s, NULL) ON CONFLICT DO NOTHING''' % (
                             int(member.id), int(0), int(0), int(0), int(0)))
                         # Get the time in voice chat
