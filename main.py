@@ -45,6 +45,15 @@ async def create_db_pool():
                             prefix TEXT,
                             PRIMARY KEY(guild_id))''')
 
+    # Creates the user skill database
+    await client.pool.execute('''CREATE TABLE IF NOT EXISTS pet_inventory( 
+                        id BIGSERIAL,
+                        user_id BIGINT,
+                        codename TEXT,
+                        xp DECIMAL,
+                        level BIGINT,
+                        PRIMARY KEY(id))''')
+
     # Creates the guild members database
     await client.pool.execute('''CREATE TABLE IF NOT EXISTS guild_members( 
                             user_id BIGINT,

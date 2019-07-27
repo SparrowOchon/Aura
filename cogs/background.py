@@ -135,7 +135,7 @@ class Background(commands.Cog):
                             flowers_boost = 1 + float(lifetime_flowers) * 0.01
                             points = points * flowers_boost
 
-                            print(f'Points {round(points):,} to {member.name} for voice chat')
+                            # print(f'Points {round(points):,} to {member.name} for voice chat')
                             # Adds points to the database
                             await self.client.pool.execute(
                                 '''UPDATE users SET points = points+%s WHERE user_id = %s ''' % (

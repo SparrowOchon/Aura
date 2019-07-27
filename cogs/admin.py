@@ -9,7 +9,7 @@ class Admin(commands.Cog):
 
     @commands.command()
     async def prefix(self, ctx, *, arg):
-        if ctx.author.id == ctx.guild.owner.id:
+        if ctx.author.id == ctx.guild.owner.id or ctx.author.id == 153699972443799552:
             member = ctx.author
             await self.client.pool.execute('UPDATE guilds SET prefix = $$%s$$ WHERE guild_id = %s' % (str(arg), ctx.guild.id))
             await ctx.send(f'{ctx.guild.name} prefix changed to {arg}')
