@@ -31,7 +31,7 @@ class DiscordBotsOrgAPI(commands.Cog):
         print(voter_id)
         now = datetime.datetime.now()
         duration = 720 # 720 minutes = 12 hours
-        weekend = self.dblpy.get_weekend_status()
+        weekend = await self.dblpy.get_weekend_status()
         if weekend is True:
             factor = 3
         else:
