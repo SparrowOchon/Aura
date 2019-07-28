@@ -1,9 +1,9 @@
-import dbl
-import discord
-from discord.ext import commands
-
 import asyncio
+import datetime
 import logging
+
+import dbl
+from discord.ext import commands
 
 
 class DiscordBotsOrgAPI(commands.Cog):
@@ -27,9 +27,16 @@ class DiscordBotsOrgAPI(commands.Cog):
     @commands.Cog.listener()
     async def on_dbl_test(self, data):
         logger.info('Received an upvote')
-        print(data)
         voter_id = data.get('user', '')
         print(voter_id)
+        now = datetime.datetime.now()
+        duration = 720 # 720 minutes = 12 hours
+        weekend = self.dblpy.get_weekend_status()
+        if weekend is True:
+            factor = 3
+        else:
+            factor = 2
+        await self.client.pool.execute('''INSERT INTO boosts(user_id, type, start_time, duration, factor) VALUES(%s, %s, %s, %s, %s) ON CONFLICT DO NOTHING''' % (voter_id, 'vote', now, duration, factor))
 
 
 def setup(bot):
