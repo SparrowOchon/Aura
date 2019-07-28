@@ -5,13 +5,14 @@ import dbl
 import datetime
 
 
-class Fun(commands.Cog):
+class Boosts(commands.Cog):
     def __init__(self, client):
         self.client = client
         self.token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjI3MjI2MDA2Mjc5MjEyMjM2OCIsImJvdCI6dHJ1ZSwiaWF0IjoxNTY0MjQ5NjkzfQ.KHXeQJYvlm2OH9AvQ7RlIihwjfQnIsWr8q4hXK-JU6k' # set this to your DBL token
         self.dblpy = dbl.Client(self.client, self.token)
 
     async def on_dbl_vote(self, ctx):
+        print(ctx)
         now = datetime.datetime.now()
         duration = 720 # 720 minutes = 12 hours
         weekend = self.dblpy.get_weekend_status()
@@ -23,4 +24,4 @@ class Fun(commands.Cog):
 
 
 def setup(client):
-    client.add_cog(Fun(client))
+    client.add_cog(Boosts(client))
