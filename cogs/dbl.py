@@ -37,7 +37,7 @@ class DiscordBotsOrgAPI(commands.Cog):
             factor = 3
         else:
             factor = 2
-        await self.client.pool.execute('''INSERT INTO boosts(user_id, type, start_time, duration, factor) VALUES($$%s$$, $$%s$$, %s, %s, %s) ON CONFLICT DO NOTHING''' % (int(voter_id), 'vote', now, duration, factor))
+        await self.client.pool.execute('''INSERT INTO boosts(user_id, type, start_time, duration, factor) VALUES($$%s$$, $$%s$$, $$%s$$, %s, %s) ON CONFLICT DO NOTHING''' % (int(voter_id), 'vote', now, duration, factor))
 
 
 def setup(client):
