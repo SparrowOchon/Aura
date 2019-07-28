@@ -169,6 +169,10 @@ class Background(commands.Cog):
     async def boost_check(self):
         await self.client.pool.execute('DELETE FROM boosts WHERE make_interval(mins := duration) < now()-start_time''')
 
+    @tasks.loop(seconds=30)
+    async def bot_status(self):
+        await self.client.change_presence(game=discord.Game(name=f' {len(list(self.client.guilds))}', type=3))
+
 
 def setup(client):
     client.add_cog(Background(client))
