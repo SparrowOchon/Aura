@@ -116,7 +116,7 @@ async def on_message(message):
 
     # Add users into the database if they're not there
     await client.pool.execute('''INSERT INTO users(user_id, text_messages, voice_time, points, lifetime, voice_join_timestamp) VALUES(%s, %s, %s, %s, %s, NULL) ON CONFLICT DO NOTHING''' % (int(member.id), int(0), int(0), int(0), int(0)))
-    # await client.pool.execute('''INSERT INTO guild_members(user_id, guild_id) VALUES(%s, %s) ON CONFLICT DO NOTHING''' % (int(member.id), int(member.guild.id)))
+    await client.pool.execute('''INSERT INTO guild_members(user_id, guild_id) VALUES(%s, %s) ON CONFLICT DO NOTHING''' % (int(member.id), int(member.guild.id)))
 
     # Adds user into the user_skill database if they are not there
     await client.pool.execute(

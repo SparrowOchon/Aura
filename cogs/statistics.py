@@ -109,7 +109,74 @@ class Statistics(commands.Cog):
         points = await self.client.pool.fetch('''SELECT %s FROM users ORDER BY %s DESC OFFSET %s ROWS FETCH FIRST 10 ROWS ONLY''' % (currency, currency, (number*10-10)))
         user_id = await self.client.pool.fetch('''SELECT user_id FROM users ORDER BY %s DESC OFFSET %s ROWS FETCH FIRST 10 ROWS ONLY''' % (currency, (number*10-10)))
         iteration = 0
-        embed = discord.Embed(title=f'Leaderboards for {title}', description=f'Page {number}')
+        embed = discord.Embed(title=f'{title} Leaderboards', description=f'Page {number}')
+        embed.set_footer(text=f"Requested by {ctx.author}")
+        for users in user_id:
+            uid = user_id[iteration]
+            cur = points[iteration]
+            user_id_value = uid['user_id']
+            points_value = cur[f'{currency}']
+            user = self.client.get_user(user_id_value)
+            if user is None:
+                username = f'Anonymous User'
+            else:
+                username = user.name
+            embed.add_field(name=f'#{int(iteration)+int(1)} - {username}', value=f'{int(points_value):,} {name}', inline=False)
+            iteration = iteration+1
+            if iteration == 10:
+                break
+        await ctx.send(embed=embed)
+
+    # Leaderboards command
+    @commands.command(aliases=['glb', 'guildleaderboard', 'guildleaderboards', 'slb', 'serverleaderboard', 'serverleaderboards'])
+    @commands.cooldown(1, 5, commands.BucketType.user)
+    async def _guildleaderboard(self, ctx, number: typing.Optional[int] = 1, currency_type: typing.Optional[str] = 'silver'):
+        silver_aliases = [
+            'silver',
+            'points',
+            'point',
+            's'
+        ]
+        lifetime_silver_aliases = [
+            'lifetimesilver',
+            'lifetimepoints',
+            'lifetimepoint',
+            'ls',
+            'lifetime'
+        ]
+        flower_aliases = [
+            'flower',
+            'flowers',
+            'rebirth'
+        ]
+        lifetime_flower_aliases = [
+            'lifetimeflower',
+            'lifetimeflowers',
+            'lifetimerebirth',
+            'lf'
+        ]
+        currency = 'silver'
+        name = 'silver'
+        if currency_type in silver_aliases:
+            currency = 'points'
+            title = 'Silver'
+        elif currency_type in flower_aliases:
+            currency = 'flowers'
+            name = 'flowers'
+            title = 'Flowers'
+        elif currency_type in lifetime_silver_aliases:
+            currency = 'lifetime'
+            name = 'lifetime silver'
+            title = 'Lifetime Silver'
+        elif currency_type in lifetime_flower_aliases:
+            currency = 'lifetimeflowers'
+            name = 'lifetime flowers'
+            title = 'Lifetime Flowers'
+
+        points = await self.client.pool.fetch('''SELECT %s FROM users WHERE EXISTS(SELECT 1 FROM guild_members WHERE users.user_id = guild_members.user_id AND guild_members.guild_id = %s) ORDER BY %s DESC OFFSET %s ROWS FETCH FIRST 10 ROWS ONLY''' % (currency, ctx.guild.id, currency, (number*10-10)))
+        user_id = await self.client.pool.fetch('''SELECT user_id FROM users WHERE EXISTS(SELECT 1 FROM guild_members WHERE users.user_id = guild_members.user_id AND guild_members.guild_id = %s) ORDER BY %s DESC OFFSET %s ROWS FETCH FIRST 10 ROWS ONLY''' % (ctx.guild.id, currency, (number*10-10)))
+        iteration = 0
+        embed = discord.Embed(title=f'{title} Leaderboards in {ctx.guild.name}', description=f'Page {number}')
         embed.set_footer(text=f"Requested by {ctx.author}")
         for users in user_id:
             uid = user_id[iteration]

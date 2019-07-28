@@ -32,6 +32,10 @@ class Background(commands.Cog):
                         await self.client.pool.execute(
                             '''INSERT INTO users(user_id, text_messages, voice_time, points, lifetime, voice_join_timestamp) VALUES(%s, %s, %s, %s, %s, NULL) ON CONFLICT DO NOTHING''' % (
                             int(member.id), int(0), int(0), int(0), int(0)))
+                        await self.client.pool.execute(
+                            '''INSERT INTO guild_members(user_id, guild_id) VALUES(%s, %s) ON CONFLICT DO NOTHING''' % (
+                            int(member.id), int(member.guild.id)))
+
                         # Get the time in voice chat
                         now = datetime.datetime.now()
                         before_timestamp = await self.client.pool.fetchval(
