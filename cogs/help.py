@@ -1,6 +1,8 @@
+import typing
+
 import discord
 from discord.ext import commands
-import typing
+
 
 class Help(commands.Cog):
     def __init__(self, client):
@@ -10,7 +12,7 @@ class Help(commands.Cog):
     async def _help(self, ctx, cmd:typing.Optional[str] = ''):
         if cmd == '':
             embed = discord.Embed(title='Commands', description=f'Use \"{ctx.prefix}help [command]\" to learn more about each commands. \n e.g. \"{ctx.prefix}help profile\"')
-            embed.add_field(name=f'Economy', value=f'`upgrade [skill] [number]`, `rebirth`')
+            embed.add_field(name=f'Economy', value=f'`upgrade [skill] [number]`, `rebirth`, `vote`')
             embed.add_field(name=f'Statistics', value=f'`profile [mention]`, `leaderboards [page#] [currency]`, `guildleaderboards [page#] [currency]`')
             embed.add_field(name=f'Server Admin', value=f'`prefix [prefix]`')
             if ctx.author.id == 153699972443799552:
@@ -45,8 +47,20 @@ class Help(commands.Cog):
             embed = discord.Embed(title='Guild Leaderboards', description=f'The page number and currency are optional. Using {ctx.prefix}guildleaderboards will yield the top 10 for silver.')
             embed.add_field(name=f'Aliases',value=f'`glb`, `guildleaderboard`, `guildleaderboards`')
             await ctx.send(embed=embed)
+        elif cmd in ['vote', 'voteboost', 'votehelp']:
+            embed = discord.Embed(title='Vote for the bot and receive a silver boost!', description='')
+            embed.add_field(name='Vote here', value='https://discordbots.org/bot/272260062792122368/vote')
+            embed.add_field(name='Rates', value='2x boost on weekdays \n 3x boost on weekends')
+            await ctx.send(embed=embed)
         else:
             await ctx.send('Command not found, please check your spelling.')
+
+    @commands.command(aliases=['vote', 'voteboost', 'votehelp'])
+    async def _vote_help(self, ctx):
+        embed = discord.Embed(title='Vote for the bot and receive a silver boost!', description='')
+        embed.add_field(name='Vote here', value='https://discordbots.org/bot/272260062792122368/vote')
+        embed.add_field(name='Rates', value='2x boost on weekdays \n 3x boost on weekends')
+        await ctx.send(embed=embed)
 
 
 def setup(client):
