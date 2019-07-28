@@ -62,7 +62,7 @@ class Statistics(commands.Cog):
 
     # Leaderboards command
     @commands.command(aliases=['lb', 'leaderboard', 'leaderboards'])
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(1, 1, commands.BucketType.user)
     async def _leaderboard(self, ctx, number: typing.Optional[int] = 1, currency_type: typing.Optional[str] = 'silver'):
         silver_aliases = [
             'silver',
@@ -129,7 +129,7 @@ class Statistics(commands.Cog):
 
     # Leaderboards command
     @commands.command(aliases=['glb', 'guildleaderboard', 'guildleaderboards', 'slb', 'serverleaderboard', 'serverleaderboards'])
-    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.cooldown(1, 1, commands.BucketType.user)
     async def _guildleaderboard(self, ctx, number: typing.Optional[int] = 1, currency_type: typing.Optional[str] = 'silver'):
         silver_aliases = [
             'silver',
