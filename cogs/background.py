@@ -171,7 +171,7 @@ class Background(commands.Cog):
 
     @tasks.loop(seconds=30)
     async def bot_status(self):
-        await self.client.change_presence(status=discord.Status.online,activity=discord.Activity(name=f'{len(list(self.client.guilds))} servers', type=2))
+        await self.client.change_presence(status=discord.Status.online, activity=discord.Activity(name=f'{len(list(self.client.guilds))} servers', type=2))
 
 def setup(client):
     client.add_cog(Background(client))

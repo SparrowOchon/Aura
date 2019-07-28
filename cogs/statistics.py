@@ -57,7 +57,7 @@ class Statistics(commands.Cog):
         embed.add_field(name=f'Rebirths', value=f'{rebirths}', inline=True)
         embed.add_field(name=f'Quanta', value=f'{round(quanta):,} {quanta_emoji}', inline=True)
         boosts_list = await self.client.pool.fetch('''SELECT type FROM boosts WHERE user_id=%s''' % int(target.id))
-        if boosts_list is None:
+        if boosts_list is not None:
             print('not none')
             boosts_list_clean = []
             iteration = 0
