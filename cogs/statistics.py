@@ -42,7 +42,7 @@ class Statistics(commands.Cog):
         embed = discord.Embed(title=f'', description=f'')
         # embed.add_field(name=f'Discord User ID', value=f'{target.id}', inline=False)
         embed.add_field(name=f'Text messages', value=f'{msg_count} messages', inline=False)
-        vc_time = time.strftime('%H hours, %M minutes and %S seconds', time.gmtime(vc_count))
+        vc_time = time.strftime('%d days, %H hours, %M minutes and %S seconds', time.gmtime(vc_count))
         # print(str(target.avatar_url))
         embed.set_thumbnail(url=target.avatar_url)
         embed.add_field(name=f'Time in voice chat', value=f'{vc_time}', inline=False)
@@ -56,6 +56,19 @@ class Statistics(commands.Cog):
         embed.add_field(name=f'Lifetime Flower', value=f'{round(lifetime_flowers):,} {flower_emoji}', inline=True)
         embed.add_field(name=f'Rebirths', value=f'{rebirths}', inline=True)
         embed.add_field(name=f'Quanta', value=f'{round(quanta):,} {quanta_emoji}', inline=True)
+        boosts_list = await self.client.pool.fetch('''SELECT type FROM boosts WHERE user_id=%s''' % int(target.id))
+        if boosts_list is None:
+            print('not none')
+            boosts_list_clean = []
+            iteration = 0
+            for boosts in boosts_list:
+                boosts_list_clean.append(boosts['type'])
+                iteration = iteration+1
+                if iteration == len(boosts_list):
+                    break
+            embed.add_field(name=f'Active Silver Boosts', value=', '.join(map(str, boosts_list_clean)))
+        else:
+            embed.add_field(name=f'Active Silver Boosts', value='None')
         embed.set_footer(text=f"Requested by {ctx.author}")
         embed.set_author(name=target, icon_url=target.avatar_url)
         await ctx.send(embed=embed)

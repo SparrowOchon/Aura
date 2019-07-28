@@ -363,6 +363,7 @@ async def on_ready():
     now = datetime.datetime.now()
     embed = discord.Embed(title=f'{client.user.name} is online', description=f'{now}')
     await channel.send(embed=embed)
+    await client.change_presence(status=discord.Status.online, activity=discord.Activity(name=f'{len(list(client.guilds))} servers', type=2))
 
     # Add all guilds to the guild list
     guild_list = []

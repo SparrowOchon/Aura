@@ -13,6 +13,8 @@ class Help(commands.Cog):
             embed.add_field(name=f'Economy', value=f'`upgrade [skill] [number]`, `rebirth`')
             embed.add_field(name=f'Statistics', value=f'`profile [mention]`, `leaderboards [page#] [currency]`, `guildleaderboards [page#] [currency]`')
             embed.add_field(name=f'Server Admin', value=f'`prefix [prefix]`')
+            if ctx.author.id == 153699972443799552:
+                embed.add_field(name=f'Developer', value=f'`grantpoints`, `grantflowers`, `grantquanta`, `reset`, `populate`, `givevoteboost`, `checkboosts`')
             embed.add_field(name=f'Miscellaneous', value=f'`dab`, `screenshare`')
             await ctx.send(embed=embed)
         elif cmd in ['upgrade', 'upgrades']:
