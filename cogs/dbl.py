@@ -28,9 +28,20 @@ class DiscordBotsOrgAPI(commands.Cog):
     async def on_dbl_test(self, data):
         logger.info('Received an upvote')
         voter_id = data.get('user', '')
-        print(voter_id)
         now = datetime.datetime.now()
-        print(now)
+        duration = 720 # 720 minutes = 12 hours
+        weekend = await self.dblpy.get_weekend_status()
+        if weekend is True:
+            factor = 3
+        else:
+            factor = 2
+        await self.client.pool.execute('''INSERT INTO boosts(user_id, type, start_time, duration, factor) VALUES($$%s$$, $$%s$$, $$%s$$, %s, %s) ON CONFLICT DO NOTHING''' % (int(voter_id), 'vote', now, duration, factor))
+
+    @commands.Cog.listener()
+    async def on_dbl_vote(self, data):
+        logger.info('Received an upvote')
+        voter_id = data.get('user', '')
+        now = datetime.datetime.now()
         duration = 720 # 720 minutes = 12 hours
         weekend = await self.dblpy.get_weekend_status()
         if weekend is True:
