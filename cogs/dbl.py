@@ -25,7 +25,7 @@ class DiscordBotsOrgAPI(commands.Cog):
             await asyncio.sleep(1800)
 
     @commands.Cog.listener()
-    async def on_dbl_vote(self, data):
+    async def on_dbl_test(self, data):
         logger.info('Received an upvote')
         print(data)
         voter_id = data.get('user', '')
