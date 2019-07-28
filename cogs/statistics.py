@@ -121,7 +121,7 @@ class Statistics(commands.Cog):
                 username = f'Anonymous User'
             else:
                 username = user.name
-            embed.add_field(name=f'#{int(iteration)+int(1)} - {username}', value=f'{int(points_value):,} {name}', inline=False)
+            embed.add_field(name=f'#{int(iteration)+int(1)+int(number*10-10)} - {username}', value=f'{int(points_value):,} {name}', inline=False)
             iteration = iteration+1
             if iteration == 10:
                 break
@@ -188,7 +188,7 @@ class Statistics(commands.Cog):
                 username = f'Anonymous User'
             else:
                 username = user.name
-            embed.add_field(name=f'#{int(iteration)+int(1)} - {username}', value=f'{int(points_value):,} {name}', inline=False)
+            embed.add_field(name=f'#{int(iteration)+int(1)+int(number*10-10)} - {username}', value=f'{int(points_value):,} {name}', inline=False)
             iteration = iteration+1
             if iteration == 10:
                 break

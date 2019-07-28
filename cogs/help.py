@@ -9,10 +9,10 @@ class Help(commands.Cog):
     @commands.command(aliases=['help', 'command', 'commands'])
     async def _help(self, ctx, cmd:typing.Optional[str] = ''):
         if cmd == '':
-            embed = discord.Embed(title='Commands', description=f'Use {ctx.prefix}help command to learn more about each commands. \n e.g. \"{ctx.prefix}help profile\"')
-            embed.add_field(name=f'Economy', value=f'`upgrade`, `rebirth`')
-            embed.add_field(name=f'Statistics', value=f'`profile`')
-            embed.add_field(name=f'Server Admin', value=f'`prefix`')
+            embed = discord.Embed(title='Commands', description=f'Use \"{ctx.prefix}help [command]\" to learn more about each commands. \n e.g. \"{ctx.prefix}help profile\"')
+            embed.add_field(name=f'Economy', value=f'`upgrade [skill] [number]`, `rebirth`')
+            embed.add_field(name=f'Statistics', value=f'`profile [mention]`, `leaderboards [page#] [currency]`, `guildleaderboards [page#] [currency]`')
+            embed.add_field(name=f'Server Admin', value=f'`prefix [prefix]`')
             embed.add_field(name=f'Miscellaneous', value=f'`dab`, `screenshare`')
             await ctx.send(embed=embed)
         elif cmd in ['upgrade', 'upgrades']:
@@ -34,6 +34,14 @@ class Help(commands.Cog):
             await ctx.send(embed=embed)
         elif cmd in ['screenshare', 'share', 'screen', 'sharescreen']:
             embed = discord.Embed(title='Screen sharing', description='Use this command while in a voice channel to produce a link that allows you to display or view screenshares. Everyone who wants to see the screenshare must click on the link.')
+            await ctx.send(embed=embed)
+        elif cmd in ['leaderboards', 'lb', 'leaderboard']:
+            embed = discord.Embed(title='Leaderboards', description=f'The page number and currency are optional. Using {ctx.prefix}leaderboards will yield the top 10 for silver.')
+            embed.add_field(name=f'Aliases',value=f'`lb`, `leaderboard`, `leaderboards`')
+            await ctx.send(embed=embed)
+        elif cmd in ['guildleaderboards', 'glb', 'guildleaderboard']:
+            embed = discord.Embed(title='Guild Leaderboards', description=f'The page number and currency are optional. Using {ctx.prefix}guildleaderboards will yield the top 10 for silver.')
+            embed.add_field(name=f'Aliases',value=f'`glb`, `guildleaderboard`, `guildleaderboards`')
             await ctx.send(embed=embed)
         else:
             await ctx.send('Command not found, please check your spelling.')
