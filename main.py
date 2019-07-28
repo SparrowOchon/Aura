@@ -349,6 +349,13 @@ async def on_voice_state_update(member, before, after):
         await client.pool.execute('''UPDATE users SET voice_join_timestamp = NULL WHERE user_id = %s''' % (member.id))
 
 
+@client.event
+async def on_guild_join(guild):
+    channel = client.get_channel(604741076900642826)
+    await channel.send(f'{guild.name} with {guild.member_count} members has added {client.user.name}')
+    await client.pool.execute('''INSERT INTO guilds(guild_id, prefix, count) VALUES(%s, $$%s$$, %s) ON CONFLICT DO NOTHING''' % (int(guild.id), '.', int(guild.member_count)))
+
+
 # What to do when the bot finishes loading
 @client.event
 async def on_ready():

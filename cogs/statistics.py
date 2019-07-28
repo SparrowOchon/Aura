@@ -63,7 +63,7 @@ class Statistics(commands.Cog):
     # Leaderboards command
     @commands.command(aliases=['lb', 'leaderboard', 'leaderboards'])
     @commands.cooldown(1, 5, commands.BucketType.user)
-    async def _leaderboard(self, ctx, number: typing.Optional[int] = '10', currency_type: typing.Optional[str] = 'silver'):
+    async def _leaderboard(self, ctx, number: typing.Optional[int] = 1, currency_type: typing.Optional[str] = 'silver'):
         silver_aliases = [
             'silver',
             'points',
@@ -106,10 +106,11 @@ class Statistics(commands.Cog):
             name = 'lifetime flowers'
             title = 'Lifetime Flowers'
 
-        points = await self.client.pool.fetch('''SELECT %s FROM users ORDER BY %s DESC FETCH FIRST %s ROWS ONLY''' % (currency, currency, number))
-        user_id = await self.client.pool.fetch('''SELECT user_id FROM users ORDER BY %s DESC FETCH FIRST %s ROWS ONLY''' % (currency, number))
+        points = await self.client.pool.fetch('''SELECT %s FROM users ORDER BY %s DESC OFFSET %s ROWS FETCH FIRST 10 ROWS ONLY''' % (currency, currency, (number*10-10)))
+        user_id = await self.client.pool.fetch('''SELECT user_id FROM users ORDER BY %s DESC OFFSET %s ROWS FETCH FIRST 10 ROWS ONLY''' % (currency, (number*10-10)))
         iteration = 0
-        embed = discord.Embed(title=f'Top {number} Leaderboards for {title}')
+        embed = discord.Embed(title=f'Leaderboards for {title}', description=f'Page {number}')
+        embed.set_footer(text=f"Requested by {ctx.author}")
         for users in user_id:
             uid = user_id[iteration]
             cur = points[iteration]
@@ -122,7 +123,7 @@ class Statistics(commands.Cog):
                 username = user.name
             embed.add_field(name=f'#{int(iteration)+int(1)} - {username}', value=f'{int(points_value):,} {name}', inline=False)
             iteration = iteration+1
-            if iteration == number:
+            if iteration == 10:
                 break
         await ctx.send(embed=embed)
 

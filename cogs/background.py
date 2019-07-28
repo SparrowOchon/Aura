@@ -161,9 +161,9 @@ class Background(commands.Cog):
     async def server_count_status(self):
         count = 0
 
-    @tasks.loop(seconds=60)
-    async def boost_check(self):
-        await self.client.pool.execute('DELETE FROM boosts WHERE make_interval(mins := duration) < now()-start_time''')
+    # @tasks.loop(seconds=5)
+    # async def boost_check(self):
+    #     await self.client.pool.execute('DELETE FROM boosts WHERE make_interval(mins := duration) < now()-start_time''')
 
 
 def setup(client):
