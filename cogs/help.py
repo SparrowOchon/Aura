@@ -9,7 +9,7 @@ class Help(commands.Cog):
         self.client = client
 
     @commands.command(aliases=['help', 'command', 'commands'])
-    async def _help(self, ctx, cmd:typing.Optional[str] = ''):
+    async def _help(self, ctx, cmd: typing.Optional[str] = ''):
         if cmd == '':
             embed = discord.Embed(title='Commands', description=f'Use \"{ctx.prefix}help [command]\" to learn more about each commands. \n e.g. \"{ctx.prefix}help profile\"')
             embed.add_field(name=f'Economy', value=f'`upgrade [skill] [number]`, `rebirth`, `vote`')
@@ -59,7 +59,7 @@ class Help(commands.Cog):
     async def _vote_help(self, ctx):
         embed = discord.Embed(title='Vote for the bot and receive a silver boost!', description='')
         embed.add_field(name='Vote here', value='https://discordbots.org/bot/272260062792122368/vote')
-        embed.add_field(name='Rates', value='2x boost on weekdays \n 3x boost on weekends')
+        embed.add_field(name='Rates', value='2x boost on weekdays \n 3x boost on weekends', inline=False)
         await ctx.send(embed=embed)
 
 
