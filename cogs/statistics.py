@@ -57,8 +57,9 @@ class Statistics(commands.Cog):
         embed.add_field(name=f'Rebirths', value=f'{rebirths}', inline=True)
         embed.add_field(name=f'Quanta', value=f'{round(quanta):,} {quanta_emoji}', inline=True)
         boosts_list = await self.client.pool.fetch('''SELECT type FROM boosts WHERE user_id=%s''' % int(target.id))
-        if boosts_list is not None:
-            print('not none')
+        if boosts_list == []:
+            embed.add_field(name=f'Active Silver Boosts', value='None')
+        else:
             boosts_list_clean = []
             iteration = 0
             for boosts in boosts_list:
@@ -67,8 +68,6 @@ class Statistics(commands.Cog):
                 if iteration == len(boosts_list):
                     break
             embed.add_field(name=f'Active Silver Boosts', value=', '.join(map(str, boosts_list_clean)))
-        else:
-            embed.add_field(name=f'Active Silver Boosts', value='None')
         embed.set_footer(text=f"Requested by {ctx.author}")
         embed.set_author(name=target, icon_url=target.avatar_url)
         await ctx.send(embed=embed)
@@ -227,7 +226,6 @@ class Statistics(commands.Cog):
     @commands.command(aliases=['info', 'information', 'i'])
     async def _info(self, ctx):
         await ctx.send('Working on it')
-
 
 
 def setup(client):

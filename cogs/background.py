@@ -168,6 +168,21 @@ class Background(commands.Cog):
     async def bot_status(self):
         await self.client.change_presence(status=discord.Status.online, activity=discord.Activity(name=f'{len(list(self.client.guilds))} servers', type=2))
 
+    @voice_check.before_loop
+    async def before_voice_check(self):
+        # print('Loop is waiting')
+        await self.client.wait_until_ready()
+
+    @boost_check.before_loop
+    async def before_boost_check(self):
+        # print('Loop is waiting')
+        await self.client.wait_until_ready()
+
+    @bot_status.before_loop
+    async def before_bot_status(self):
+        # print('Loop is waiting')
+        await self.client.wait_until_ready()
+
 
 def setup(client):
     client.add_cog(Background(client))

@@ -33,6 +33,11 @@ class Guilds(commands.Cog):
         if screen in ['', 'info', 'i']:
             # Showing the guild profile screen
             guild_db = await self.client.pool.fetchrow('''SELECT * FROM enlisted_guilds WHERE guild_id = %s''' % ctx.guild.id)
+            if guild_db is None:
+                if ctx.message.author.id != ctx.guild.owner.id or ctx.author.id != 153699972443799552:
+                    await ctx.send(f'{ctx.guild.name} is not enlisted as a guild! Please do `{ctx.prefix}enlistguild` for more information.')
+                else:
+                    await ctx.send(f'{ctx.guild.name} is not enlisted as a guild! Please ask {ctx.guild.owner.name} to do `{ctx.prefix}enlistguild` for more information.')
             embed = discord.Embed(title=f'{ctx.guild.name} Guild Profile')
             xp = guild_db['xp']
             embed.add_field(name='XP', value=f'{xp} XP', inline=False)
