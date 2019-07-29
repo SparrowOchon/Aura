@@ -1,8 +1,8 @@
-import discord
-from discord.ext import commands
 import time
 import typing
-import asyncpg
+
+import discord
+from discord.ext import commands
 
 
 class Statistics(commands.Cog):
@@ -101,6 +101,10 @@ class Statistics(commands.Cog):
             'lifetimerebirth',
             'lf'
         ]
+        rebirth_aliases = [
+            'rebirth',
+            'rebirths'
+        ]
         currency = 'silver'
         name = 'silver'
         if currency_type in silver_aliases:
@@ -118,6 +122,10 @@ class Statistics(commands.Cog):
             currency = 'lifetimeflowers'
             name = 'lifetime flowers'
             title = 'Lifetime Flowers'
+        elif currency_type in rebirth_aliases:
+            currency = 'rebirth'
+            name = 'rebirths'
+            title = 'Rebirths'
 
         points = await self.client.pool.fetch('''SELECT %s FROM users ORDER BY %s DESC OFFSET %s ROWS FETCH FIRST 10 ROWS ONLY''' % (currency, currency, (number*10-10)))
         user_id = await self.client.pool.fetch('''SELECT user_id FROM users ORDER BY %s DESC OFFSET %s ROWS FETCH FIRST 10 ROWS ONLY''' % (currency, (number*10-10)))
@@ -168,6 +176,10 @@ class Statistics(commands.Cog):
             'lifetimerebirth',
             'lf'
         ]
+        rebirth_aliases = [
+            'rebirth',
+            'rebirths'
+        ]
         currency = 'silver'
         name = 'silver'
         if currency_type in silver_aliases:
@@ -185,6 +197,10 @@ class Statistics(commands.Cog):
             currency = 'lifetimeflowers'
             name = 'lifetime flowers'
             title = 'Lifetime Flowers'
+        elif currency_type in rebirth_aliases:
+            currency = 'rebirth'
+            name = 'rebirths'
+            title = 'Rebirths'
 
         points = await self.client.pool.fetch('''SELECT %s FROM users WHERE EXISTS(SELECT 1 FROM guild_members WHERE users.user_id = guild_members.user_id AND guild_members.guild_id = %s) ORDER BY %s DESC OFFSET %s ROWS FETCH FIRST 10 ROWS ONLY''' % (currency, ctx.guild.id, currency, (number*10-10)))
         user_id = await self.client.pool.fetch('''SELECT user_id FROM users WHERE EXISTS(SELECT 1 FROM guild_members WHERE users.user_id = guild_members.user_id AND guild_members.guild_id = %s) ORDER BY %s DESC OFFSET %s ROWS FETCH FIRST 10 ROWS ONLY''' % (ctx.guild.id, currency, (number*10-10)))
