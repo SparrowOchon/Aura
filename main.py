@@ -61,14 +61,20 @@ async def create_db_pool():
 
     await client.pool.execute('''ALTER TABLE guilds ADD COLUMN IF NOT EXISTS count DECIMAL DEFAULT 0''')
 
-    # Creates the pets database
+    # Creates the pets inventory database
     await client.pool.execute('''CREATE TABLE IF NOT EXISTS pet_inventory( 
                         id BIGSERIAL,
                         user_id BIGINT,
+                        type_id INTEGER,
+                        rarity INTEGER,
                         codename TEXT,
                         xp DECIMAL,
                         level BIGINT,
+                        equipped BOOLEAN,
                         PRIMARY KEY(id))''')
+
+    # Creates the pets database
+    await client.pool.execute('''CREATE TABLE IF NOT EXISTS pets(codename TEXT, type_id INTEGER, series INTEGER, rarity INTEGER, image TEXT)''')
 
     # Creates the guild members database
     await client.pool.execute('''CREATE TABLE IF NOT EXISTS guild_members( 

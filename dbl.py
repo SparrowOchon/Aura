@@ -2,8 +2,9 @@ import asyncio
 import datetime
 import logging
 
-import dbl
 from discord.ext import commands
+
+import dbl
 
 
 class DiscordBotsOrgAPI(commands.Cog):

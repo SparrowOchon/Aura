@@ -7,6 +7,10 @@ from discord.ext import commands
 class Help(commands.Cog):
     def __init__(self, client):
         self.client = client
+        self.client.gm = [
+            153699972443799552,
+            184103737369952256
+        ]
 
     @commands.command(aliases=['help', 'command', 'commands'])
     async def _help(self, ctx, cmd: typing.Optional[str] = ''):
@@ -15,7 +19,7 @@ class Help(commands.Cog):
             embed.add_field(name=f'Economy', value=f'`upgrade`, `rebirth`, `vote`')
             embed.add_field(name=f'Statistics', value=f'`profile`, `leaderboards`, `guildleaderboards`')
             embed.add_field(name=f'Server Admin', value=f'`prefix`')
-            if ctx.author.id == 153699972443799552:
+            if ctx.author.id in self.client.gm:
                 embed.add_field(name=f'Developer', value=f'`grantpoints`, `grantflowers`, `grantquanta`, `reset`, `populate`, `givevoteboost`, `checkboosts`')
             embed.add_field(name=f'Miscellaneous', value=f'`dab`, `screenshare`')
             await ctx.send(embed=embed)

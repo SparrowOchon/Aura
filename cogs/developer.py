@@ -1,13 +1,18 @@
+import datetime
+import typing
+
 import discord
 from discord.ext import commands
-import random
-import typing
-import datetime
 
 
 class Developer(commands.Cog):
     def __init__(self, client):
         self.client = client
+        self.client.gm = [
+            153699972443799552,
+            184103737369952256
+        ]
+
 
     @commands.command()
     async def owner(self, ctx):
@@ -16,9 +21,11 @@ class Developer(commands.Cog):
         else:
             await ctx.send('I only serve Gryphticon')
 
+    # Currency Commands
+
     @commands.command()
     async def grantpoints(self, ctx, user: discord.Member = None, amount: typing.Optional[int] = 5):
-        if ctx.author.id == 153699972443799552:
+        if ctx.author.id in self.client.gm:
             if user:
                 target = user
             else:
@@ -32,7 +39,7 @@ class Developer(commands.Cog):
 
     @commands.command()
     async def grantflowers(self, ctx, user: discord.Member = None, amount: typing.Optional[int] = 5):
-        if ctx.author.id == 153699972443799552:
+        if ctx.author.id in self.client.gm:
             if user:
                 target = user
             else:
@@ -46,7 +53,7 @@ class Developer(commands.Cog):
 
     @commands.command()
     async def grantquanta(self, ctx, user: discord.Member = None, amount: typing.Optional[int] = 5):
-        if ctx.author.id == 153699972443799552:
+        if ctx.author.id in self.client.gm:
             if user:
                 target = user
             else:
@@ -59,7 +66,7 @@ class Developer(commands.Cog):
 
     @commands.command()
     async def reset(self, ctx, user: discord.Member = None):
-        if ctx.author.id == 153699972443799552:
+        if ctx.author.id in self.client.gm:
             if user:
                 target = user
             else:
@@ -87,7 +94,7 @@ class Developer(commands.Cog):
 
     @commands.command()
     async def populate(self, ctx):
-        if ctx.author.id == 153699972443799552:
+        if ctx.author.id in self.client.gm:
             everyone = await self.client.pool.fetchval(
                 '''SELECT user_id FROM users''')
             for member in everyone:
@@ -98,9 +105,11 @@ class Developer(commands.Cog):
         else:
             await ctx.send('I only serve Gryphticon')
 
+    # Boost Commands
+
     @commands.command()
     async def givevoteboost(self,ctx, user: discord.Member = None):
-        if ctx.author.id == 153699972443799552:
+        if ctx.author.id in self.client.gm:
             if user:
                 target = user
             else:
@@ -113,8 +122,14 @@ class Developer(commands.Cog):
 
     @commands.command()
     async def checkboosts(self, ctx, user: discord.Member = None):
+
         await self.client.pool.execute('DELETE FROM boosts WHERE make_interval(mins := duration) < now()-start_time''')
 
+    # Pet commands
+
+    @commands.command()
+    async def givepet(self, ctx):
+        await ctx.send('WIP')
 
 def setup(client):
     client.add_cog(Developer(client))

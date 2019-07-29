@@ -1,7 +1,8 @@
+import random
+import typing
+
 import discord
 from discord.ext import commands
-import typing
-import random
 
 
 class Companion(commands.Cog):
@@ -26,6 +27,22 @@ class Companion(commands.Cog):
         if arg == 1:
             embed = discord.Embed(title='Companions', description=f'')
             await ctx.send(embed=embed)
+
+    @commands.command(aliases=['summon', 'summonings', 'summoning'])
+    async def _summon(self, ctx, item: typing.Optional[str] = '', number: typing.Optional[str] = '1'):
+        if item == '':
+            if str.isdigit(number) is False:
+                await ctx.send('You have no entered a valid page number.')
+                return
+            embed = discord.Embed(title=f'Summonings', description=f'Page {number}')
+            await ctx.send('WIP')
+
+    @commands.command(aliases=['inv', 'inventory'])
+    async def _inventory(self, ctx, item: typing.Optional[str] = '', number: typing.Optional[str] = '1'):
+        if item == '':
+            await ctx.send('WIP')
+        elif item in ['pet', 'pets', 'companion', 'companions']:
+            await ctx.send('WIP')
 
     @commands.command()
     async def opentest(self, ctx):
