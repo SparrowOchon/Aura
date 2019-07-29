@@ -1,17 +1,17 @@
-import discord
-from discord.ext import tasks, commands
-from discord import ChannelType
-import random
 import datetime
+import random
+
+import discord
+from discord import ChannelType
+from discord.ext import tasks, commands
 
 
 class Background(commands.Cog):
     def __init__(self, client):
         self.client = client
         self.voice_check.start()
-
-    def cog_unload(self):
-        self.voice_check.cancel()
+        self.boost_check.start()
+        self.bot_status.start()
 
     @tasks.loop(seconds=15)
     async def voice_check(self):
@@ -156,11 +156,6 @@ class Background(commands.Cog):
                             if hits == 0:
                                 break
 
-    @voice_check.before_loop
-    async def before_voice_check(self):
-        # print('Loop is waiting')
-        await self.client.wait_until_ready()
-
     @tasks.loop(seconds=300)
     async def server_count_status(self):
         count = 0
@@ -172,6 +167,7 @@ class Background(commands.Cog):
     @tasks.loop(seconds=30)
     async def bot_status(self):
         await self.client.change_presence(status=discord.Status.online, activity=discord.Activity(name=f'{len(list(self.client.guilds))} servers', type=2))
+
 
 def setup(client):
     client.add_cog(Background(client))

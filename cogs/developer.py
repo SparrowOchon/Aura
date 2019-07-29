@@ -21,6 +21,20 @@ class Developer(commands.Cog):
         else:
             await ctx.send('I only serve Gryphticon')
 
+    @commands.command()
+    async def botguilds(self, ctx, number: typing.Optional[int] = '1'):
+        if ctx.author.id == 153699972443799552:
+            guild_list = list(self.client.guilds)
+            embed = discord.Embed(title=f'Aura Guild List')
+            iteration = 0
+            for guild in guild_list:
+                iteration = iteration + 1
+                embed.add_field(name=f'{int(iteration)}. {guild.name}', value=f'{guild.member_count} members',
+                                inline=False)
+            await ctx.send(embed=embed)
+        else:
+            await ctx.send('I only serve Gryphticon')
+
     # Currency Commands
 
     @commands.command()
@@ -100,7 +114,7 @@ class Developer(commands.Cog):
             for member in everyone:
                 await self.client.pool.execute(
                     '''INSERT INTO guild_members(user_id, guild_id) VALUES(%s, %s) ON CONFLICT DO NOTHING''' % (
-                    int(member.id), ctx.author.guild.id))
+                        int(member.id), ctx.author.guild.id))
                 await ctx.send('Guild leaderboards have been populated')
         else:
             await ctx.send('I only serve Gryphticon')
@@ -114,22 +128,29 @@ class Developer(commands.Cog):
                 target = user
             else:
                 target = ctx.author
-        now = datetime.datetime.now()
-        duration = 720 # 720 minutes = 12 hours
-        factor = 2
-        await self.client.pool.execute('''INSERT INTO boosts(user_id, type, start_time, duration, factor) VALUES($$%s$$, $$%s$$, $$%s$$, $$%s$$, $$%s$$)''' % (target.id, 'vote', now, duration, factor))
-        await ctx.send(f'Vote boost was given to {target.display_name}')
+            now = datetime.datetime.now()
+            duration = 720 # 720 minutes = 12 hours
+            factor = 2
+            await self.client.pool.execute('''INSERT INTO boosts(user_id, type, start_time, duration, factor) VALUES($$%s$$, $$%s$$, $$%s$$, $$%s$$, $$%s$$)''' % (target.id, 'vote', now, duration, factor))
+            await ctx.send(f'Vote boost was given to {target.display_name}')
+        else:
+            await ctx.send('I only serve Gryphticon')
+
 
     @commands.command()
     async def checkboosts(self, ctx, user: discord.Member = None):
-
-        await self.client.pool.execute('DELETE FROM boosts WHERE make_interval(mins := duration) < now()-start_time''')
+        if ctx.author.id in self.client.gm:
+            await self.client.pool.execute('DELETE FROM boosts WHERE make_interval(mins := duration) < now()-start_time''')
+            await ctx.send('Boost check complete.')
+        else:
+            await ctx.send('I only serve Gryphticon')
 
     # Pet commands
 
     @commands.command()
     async def givepet(self, ctx):
         await ctx.send('WIP')
+
 
 def setup(client):
     client.add_cog(Developer(client))

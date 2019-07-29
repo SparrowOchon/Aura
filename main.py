@@ -58,8 +58,16 @@ async def create_db_pool():
                             guild_id BIGINT,
                             prefix TEXT,
                             PRIMARY KEY(guild_id))''')
-
     await client.pool.execute('''ALTER TABLE guilds ADD COLUMN IF NOT EXISTS count DECIMAL DEFAULT 0''')
+
+    # Creates the enlisted guild database
+
+    await client.pool.execute('''CREATE TABLE IF NOT EXISTS enlisted_guilds( 
+                            guild_id BIGINT,
+                            boost BIGINT,
+                            xp DECIMAL,
+                            level DECIMAL,
+                            PRIMARY KEY(guild_id))''')
 
     # Creates the pets inventory database
     await client.pool.execute('''CREATE TABLE IF NOT EXISTS pet_inventory( 

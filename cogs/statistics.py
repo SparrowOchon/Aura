@@ -228,18 +228,6 @@ class Statistics(commands.Cog):
     async def _info(self, ctx):
         await ctx.send('Working on it')
 
-    @commands.command()
-    async def guilds(self, ctx, number: typing.Optional[int] = '1'):
-        if ctx.author.id == 153699972443799552:
-            guild_list = list(self.client.guilds)
-            embed = discord.Embed(title=f'Aura Guild List')
-            iteration = 0
-            for guild in guild_list:
-                iteration = iteration+1
-                embed.add_field(name=f'{int(iteration)}. {guild.name}', value=f'{guild.member_count} members', inline=False)
-            await ctx.send(embed=embed)
-        else:
-            await ctx.send('I only serve Gryphticon')
 
 
 def setup(client):
