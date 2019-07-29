@@ -12,9 +12,9 @@ class Help(commands.Cog):
     async def _help(self, ctx, cmd: typing.Optional[str] = ''):
         if cmd == '':
             embed = discord.Embed(title='Commands', description=f'Use \"{ctx.prefix}help [command]\" to learn more about each commands. \n e.g. \"{ctx.prefix}help profile\"')
-            embed.add_field(name=f'Economy', value=f'`upgrade [skill] [number]`, `rebirth`, `vote`')
-            embed.add_field(name=f'Statistics', value=f'`profile [mention]`, `leaderboards [page#] [currency]`, `guildleaderboards [page#] [currency]`')
-            embed.add_field(name=f'Server Admin', value=f'`prefix [prefix]`')
+            embed.add_field(name=f'Economy', value=f'`upgrade`, `rebirth`, `vote`')
+            embed.add_field(name=f'Statistics', value=f'`profile`, `leaderboards`, `guildleaderboards`')
+            embed.add_field(name=f'Server Admin', value=f'`prefix`')
             if ctx.author.id == 153699972443799552:
                 embed.add_field(name=f'Developer', value=f'`grantpoints`, `grantflowers`, `grantquanta`, `reset`, `populate`, `givevoteboost`, `checkboosts`')
             embed.add_field(name=f'Miscellaneous', value=f'`dab`, `screenshare`')

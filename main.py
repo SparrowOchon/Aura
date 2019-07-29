@@ -211,7 +211,7 @@ async def on_message(message):
     await client.pool.execute('''UPDATE users SET lifetime = lifetime+%s WHERE user_id = %s ''' % (points, int(member.id)))
 
     # Print the message
-    print(f'({int(points):,}){message.author} in {message.guild.name}\'s {message.channel.name} channel: {message.content}')
+    print(f'({int(points):,}) {message.author} in {message.guild.name}\'s {message.channel.name} channel: {message.content}')
     await client.process_commands(message)
 
 

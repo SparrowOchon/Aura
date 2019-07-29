@@ -1,8 +1,7 @@
-import discord
-from discord import Member
-from discord.ext.commands import has_permissions, MissingPermissions
-from discord.ext import commands
 import typing
+
+import discord
+from discord.ext import commands
 
 
 class UserSkills(commands.Cog):
@@ -42,7 +41,7 @@ class UserSkills(commands.Cog):
         if upgrade == 'help' or upgrade == '':
             silver_emoji = self.client.get_emoji(601632365667811369)
             points = await self.client.pool.fetchval('''SELECT POINTS FROM users WHERE user_id =%d''' % (int(member.id)))
-            embed = discord.Embed(title='Skill Upgrades', description=f'Balance: {int(points)} {silver_emoji}')
+            embed = discord.Embed(title='Skill Upgrades', description=f'Balance: {int(points):,} {silver_emoji}')
             embed.add_field(name=f'⚜ Multi-hit Chance (Level {round(mc_level)})', value=f'Chance to proc multiple messages that will also apply other upgrades. It does not proc itself. \n Chance: {round(mc_level)*0.5}% \n Upgrade Cost: {round(mc_cost):,} {silver_emoji}', inline=False)
             embed.add_field(name=f'🔱 Multi-hit Factor (Level {round(mf_level)})', value=f'Number of multi-hits on proc \n Factor: {2+(mf_level)}x \n Upgrade Cost: {round(mf_cost):,} {silver_emoji}', inline=False)
             embed.add_field(name=f'💠 Critical Chance (Level {round(cc_level)})', value=f'Chance to get critical hits \n Chance: {cc_level}% \n Upgrade Cost: {round(cc_cost):,} {silver_emoji}', inline=False)
