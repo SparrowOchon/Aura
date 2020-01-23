@@ -11,5 +11,7 @@ The bot is run through the main.py script. I highly recommend running it in Dock
 ## Dependencies
 
 -Discord.py
+
 -asyncpg
+
 -numpy
